@@ -538,9 +538,22 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 2rem;
 }
 
+.service-tag {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  letter-spacing: 0.5px;
+  margin-bottom: 0.8rem;
+  background: rgba(216, 138, 56, 0.1);
+  border: 1px solid rgba(216, 138, 56, 0.25);
+  padding: 0.25rem 0.7rem;
+  border-radius: 20px;
+}
+
 .service-title {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  margin-bottom: 0.8rem;
   color: var(--text-primary);
 }
 
