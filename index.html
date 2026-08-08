@@ -220,53 +220,91 @@
     </div>
   </section>
 
-  <!-- Interactive Live Model Playground Section (WOW Feature) -->
+  <!-- Interactive Live Model Playground Section -->
   <section id="playground" class="playground-section">
     <div class="container">
-      <div style="text-align: center; margin-bottom: 2.5rem;">
-        <span class="section-label">INTERACTIVE DEMO</span>
-        <h2 class="section-title">Live ML Model Playground</h2>
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <span class="section-label">INTERACTIVE PLAYGROUND</span>
+        <h2 class="section-title">🧪 ML Experiments Coming Soon</h2>
       </div>
 
-      <div class="playground-container">
-        <div class="playground-tabs">
-          <button class="tab-btn active" data-target="demoSentiment">Sentiment Neural Classifier</button>
-          <button class="tab-btn" data-target="demoNN">Neural Network Inspector</button>
+      <div class="playground-container" style="max-width: 900px; margin: 0 auto; text-align: center; padding: 2.5rem 2rem;">
+        <p style="color: var(--text-secondary); max-width: 680px; margin: 0 auto 1.8rem auto; font-size: 1rem; line-height: 1.7;">
+          I'm currently building my foundations in data science and machine learning. This space will evolve into an interactive playground where I experiment with datasets, models, and AI concepts as I progress.
+        </p>
+
+        <!-- Journey Indicator -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 2.5rem;">
+          <span style="background: rgba(216, 138, 56, 0.15); color: var(--accent-color); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(216, 138, 56, 0.3);">
+            Currently Learning
+          </span>
+          <span style="color: var(--text-muted); font-weight: 700;">→</span>
+          <span style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--border-color);">
+            Building
+          </span>
+          <span style="color: var(--text-muted); font-weight: 700;">→</span>
+          <span style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid var(--border-color);">
+            Experimenting
+          </span>
         </div>
 
-        <!-- Sentiment Classifier Demo -->
-        <div class="demo-box active" id="demoSentiment">
-          <p style="color:var(--text-secondary); margin-bottom:1.2rem; font-size:0.95rem;">
-            Type a prompt below to run real-time inference on our lightweight browser neural sentiment model:
-          </p>
-          <div class="sentiment-input-group">
-            <input type="text" id="sentimentInput" class="sentiment-input" placeholder="e.g. This machine learning pipeline is remarkably fast and accurate!" value="This machine learning pipeline is remarkably fast and accurate!">
+        <!-- 3 Locked / Coming Soon Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2.2rem;">
+          
+          <!-- Card 1 -->
+          <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.8rem 1.4rem; text-align: center; position: relative; transition: var(--transition-normal); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-size: 2.2rem; margin-bottom: 0.8rem;">📊</div>
+              <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 0.6rem;">Data Exploration</h3>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.2rem;">
+                Interactive experiments with datasets, exploratory data analysis, and visualization.
+              </p>
+            </div>
+            <div>
+              <span style="display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(216, 138, 56, 0.1); color: var(--accent-color); font-size: 0.78rem; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 20px; border: 1px solid rgba(216, 138, 56, 0.25);">
+                <i class="fas fa-clock"></i> Status: Coming Soon
+              </span>
+            </div>
           </div>
 
-          <div class="sentiment-results">
-            <div class="metric-card">
-              <label>Predicted Sentiment</label>
-              <div class="metric-value" id="sentLabel" style="color:#00e676;">POSITIVE</div>
+          <!-- Card 2 -->
+          <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.8rem 1.4rem; text-align: center; position: relative; transition: var(--transition-normal); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-size: 2.2rem; margin-bottom: 0.8rem;">🤖</div>
+              <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 0.6rem;">Machine Learning</h3>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.2rem;">
+                Hands-on experiments with supervised and unsupervised learning algorithms.
+              </p>
             </div>
-            <div class="metric-card">
-              <label>Confidence Score</label>
-              <div class="metric-value" id="sentConf">98.4%</div>
-            </div>
-            <div class="metric-card">
-              <label>Inference Latency</label>
-              <div class="metric-value" id="sentLatency">1.12 ms</div>
+            <div>
+              <span style="display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(216, 138, 56, 0.1); color: var(--accent-color); font-size: 0.78rem; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 20px; border: 1px solid rgba(216, 138, 56, 0.25);">
+                <i class="fas fa-clock"></i> Status: Coming Soon
+              </span>
             </div>
           </div>
+
+          <!-- Card 3 -->
+          <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.8rem 1.4rem; text-align: center; position: relative; transition: var(--transition-normal); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-size: 2.2rem; margin-bottom: 0.8rem;">🧠</div>
+              <h3 style="font-size: 1.15rem; color: var(--text-primary); margin-bottom: 0.6rem;">AI Experiments</h3>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.2rem;">
+                Future experiments exploring deep learning, NLP, computer vision, and generative AI.
+              </p>
+            </div>
+            <div>
+              <span style="display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(255, 255, 255, 0.05); color: var(--text-muted); font-size: 0.78rem; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 20px; border: 1px solid var(--border-color);">
+                <i class="fas fa-calendar-alt"></i> Status: Planned
+              </span>
+            </div>
+          </div>
+
         </div>
 
-        <!-- Neural Net Inspector Demo -->
-        <div class="demo-box" id="demoNN">
-          <p style="color:var(--text-secondary); margin-bottom:1.2rem; font-size:0.95rem;">
-            Real-time visual node signal propagation & hidden layer weight activation inspector:
-          </p>
-          <div style="text-align:center;">
-            <canvas id="nnCanvas" width="650" height="220" style="background:#141414; border-radius:8px; border:1px solid #2a2a2a; max-width:100%;"></canvas>
-          </div>
+        <!-- Footer Tagline -->
+        <div style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.5px;">
+          <i class="fas fa-seedling" style="color: var(--accent-color); margin-right: 0.4rem;"></i>
+          Building in public. One experiment at a time.
         </div>
       </div>
     </div>
