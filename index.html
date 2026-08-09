@@ -343,7 +343,7 @@
               <span class="metric-tag">Accuracy: <strong>96.8%</strong></span>
             </div>
             <div class="project-footer">
-              <a href="https://github.com" target="_blank" class="project-link">GitHub Repo <i class="fas fa-arrow-right"></i></a>
+              <a href="https://github.com/gursimranai" target="_blank" class="project-link">GitHub Repo <i class="fas fa-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -364,7 +364,7 @@
               <span class="metric-tag">mAP@50: <strong>91.4%</strong></span>
             </div>
             <div class="project-footer">
-              <a href="https://github.com" target="_blank" class="project-link">GitHub Repo <i class="fas fa-arrow-right"></i></a>
+              <a href="https://github.com/gursimranai" target="_blank" class="project-link">GitHub Repo <i class="fas fa-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -385,7 +385,7 @@
               <span class="metric-tag">Nodes: <strong>64 GPU</strong></span>
             </div>
             <div class="project-footer">
-              <a href="https://github.com" target="_blank" class="project-link">GitHub Repo <i class="fas fa-arrow-right"></i></a>
+              <a href="https://github.com/gursimranai" target="_blank" class="project-link">GitHub Repo <i class="fas fa-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -474,53 +474,101 @@
   <!-- Contact Section -->
   <section id="contact" class="contact">
     <div class="container">
-      <div style="text-align: center; margin-bottom: 3.5rem;">
+      <div class="contact-header">
         <span class="section-label">CONTACT ME</span>
-        <h2 class="section-title">Get In Touch</h2>
+        <h2 class="section-title">Let's Connect</h2>
+        <p class="section-desc">
+          Have a project idea, internship opportunity, collaboration, or simply want to talk about AI and Machine Learning? Feel free to reach out.
+        </p>
       </div>
 
       <div class="contact-grid">
+        <!-- Left Side Information -->
         <div class="contact-info">
+          <!-- Email Card -->
           <div class="contact-card">
-            <i class="fas fa-envelope"></i>
-            <div>
-              <h5>Direct Email</h5>
-              <p>gursimran@gursimran.ai</p>
+            <div class="contact-card-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="contact-card-body">
+              <h5 class="card-label">Email</h5>
+              <a href="mailto:gursimranaidev@gmail.com" class="card-value-link">gursimranaidev@gmail.com</a>
+              <a href="mailto:gursimranaidev@gmail.com" class="email-action-btn">
+                Send an Email <i class="fas fa-arrow-right"></i>
+              </a>
             </div>
           </div>
 
+          <!-- Professional Profiles Card -->
           <div class="contact-card">
-            <i class="fas fa-map-marker-alt"></i>
-            <div>
-              <h5>Location</h5>
-              <p>San Francisco, CA & Remote</p>
+            <div class="contact-card-icon">
+              <i class="fas fa-user-check"></i>
+            </div>
+            <div class="contact-card-body">
+              <h5 class="card-label">Professional Profiles</h5>
+              <div class="profile-links-group">
+                <a href="https://github.com/gursimranai" target="_blank" rel="noopener noreferrer" class="profile-button">
+                  <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://www.linkedin.com/in/gursimranai" target="_blank" rel="noopener noreferrer" class="profile-button">
+                  <i class="fab fa-linkedin"></i> LinkedIn
+                </a>
+              </div>
             </div>
           </div>
 
+          <!-- Availability Card -->
           <div class="contact-card">
-            <i class="fas fa-link"></i>
-            <div>
-              <h5>Profiles</h5>
-              <p>GitHub • HuggingFace • LinkedIn • Scholar</p>
+            <div class="contact-card-icon">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="contact-card-body">
+              <h5 class="card-label">Open To</h5>
+              <p class="availability-info">
+                Internships &bull; Real-World Projects &bull; Collaborations &bull; Open Source
+              </p>
             </div>
           </div>
         </div>
 
-        <form class="contact-form" id="contactForm">
-          <div class="form-group">
-            <label for="contactName">Your Name</label>
-            <input type="text" id="contactName" class="form-control" placeholder="Jane Doe" required>
-          </div>
-          <div class="form-group">
-            <label for="contactEmail">Your Email</label>
-            <input type="email" id="contactEmail" class="form-control" placeholder="jane@example.com" required>
-          </div>
-          <div class="form-group">
-            <label for="contactMessage">Message / Project Inquiry</label>
-            <textarea id="contactMessage" class="form-control" placeholder="Hello Gursimran, I'd like to discuss a machine learning project..." required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">SEND MESSAGE</button>
-        </form>
+        <!-- Right Side Contact Form -->
+        <div class="contact-form-container">
+          <form class="contact-form" id="contactForm" novalidate>
+            <!-- Honeypot anti-spam field -->
+            <input type="text" name="_honey" class="honey-field" tabindex="-1" autocomplete="off" style="display:none;">
+
+            <div class="form-group">
+              <label for="contactName">Name <span class="required-star">*</span></label>
+              <input type="text" id="contactName" name="name" class="form-control" placeholder="Enter your name" required>
+              <span class="field-error" id="nameError"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="contactEmail">Email <span class="required-star">*</span></label>
+              <input type="email" id="contactEmail" name="email" class="form-control" placeholder="you@example.com" required>
+              <span class="field-error" id="emailError"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="contactSubject">Subject <span class="required-star">*</span></label>
+              <input type="text" id="contactSubject" name="subject" class="form-control" placeholder="Internship / Project / Collaboration" required>
+              <span class="field-error" id="subjectError"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="contactMessage">Message <span class="required-star">*</span></label>
+              <textarea id="contactMessage" name="message" class="form-control" placeholder="Tell me a little about your project, opportunity, or idea..." rows="5" required minlength="10"></textarea>
+              <span class="field-error" id="messageError"></span>
+            </div>
+
+            <!-- Form Status Alert Box for Success/Error -->
+            <div class="form-status-alert" id="formStatusAlert" style="display: none;"></div>
+
+            <button type="submit" class="btn btn-primary submit-btn" id="contactSubmitBtn">
+              <span>Send Message &rarr;</span>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </section>

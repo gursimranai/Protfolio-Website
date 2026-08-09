@@ -328,18 +328,255 @@ function initModals() {
 }
 
 /* ==========================================
-   7. Contact Form & Toast System
+   7. Contact Form & Email Integration
    ========================================== */
 function initContactForm() {
   const form = document.getElementById('contactForm');
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = document.getElementById('contactName').value;
-      showToast(`Thank you, ${name}! Your message has been received.`);
-      form.reset();
-    });
+  if (!form) return;
+
+  const nameInput = document.getElementById('contactName');
+  const emailInput = document.getElementById('contactEmail');
+  const subjectInput = document.getElementById('contactSubject');
+  const messageInput = document.getElementById('contactMessage');
+  const submitBtn = document.getElementById('contactSubmitBtn');
+  const alertBox = document.getElementById('formStatusAlert');
+
+  const nameError = document.getElementById('nameError');
+  const emailError = document.getElementById('emailError');
+  const subjectError = document.getElementById('subjectError');
+  const messageError = document.getElementById('messageError');
+
+  function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
   }
+
+  function clearErrors() {
+    [nameError, emailError, subjectError, messageError].forEach(el => {
+      if (el) el.textContent = '';
+    });
+    [nameInput, emailInput, subjectInput, messageInput].forEach(el => {
+      if (el) el.classList.remove('input-invalid');
+    });
+    if (alertBox) {
+      alertBox.style.display = 'none';
+      alertBox.className = 'form-status-alert';
+      alertBox.innerHTML = '';
+    }
+  }
+
+  function validateForm() {
+    clearErrors();
+    let isValid = true;
+
+    // Validate Name
+    const nameVal = nameInput ? nameInput.value.trim() : '';
+    if (!nameVal) {
+      if (nameError) nameError.textContent = 'Please enter your name.';
+      if (nameInput) nameInput.classList.add('input-invalid');
+      isValid = false;
+    }
+
+    // Validate Email
+    const emailVal = emailInput ? emailInput.value.trim() : '';
+    if (!emailVal) {
+      if (emailError) emailError.textContent = 'Please enter your email address.';
+      if (emailInput) emailInput.classList.add('input-invalid');
+      isValid = false;
+    } else if (!validateEmail(emailVal)) {
+      if (emailError) emailError.textContent = 'Please enter a valid email address.';
+      if (emailInput) emailInput.classList.add('input-invalid');
+      isValid = false;
+    }
+
+    // Validate Subject
+    const subjectVal = subjectInput ? subjectInput.value.trim() : '';
+    if (!subjectVal) {
+      if (subjectError) subjectError.textContent = 'Please enter a subject.';
+      if (subjectInput) subjectInput.classList.add('input-invalid');
+      isValid = false;
+    }
+
+    // Validate Message
+    const messageVal = messageInput ? messageInput.value.trim() : '';
+    if (!messageVal) {
+      if (messageError) messageError.textContent = 'Please enter your message.';
+      if (messageInput) messageInput.classList.add('input-invalid');
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
+  // Clear validation errors on typing
+  [nameInput, emailInput, subjectInput, messageInput].forEach(input => {
+    if (input) {
+      input.addEventListener('input', () => {
+        input.classList.remove('input-invalid');
+        const fieldName = input.id.replace('contact', '').toLowerCase();
+        const errEl = document.getElementById(fieldName + 'Error');
+        if (errEl) errEl.textContent = '';
+      });
+    }
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Honeypot anti-bot check
+    const honeypot = form.querySelector('input[name="_honey"]');
+    if (honeypot && honeypot.value) {
+      return;
+    }
+
+    if (!validateForm()) {
+      return;
+    }
+
+    const originalBtnContent = submitBtn.innerHTML;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    const endpoint = 'https://formsubmit.co/ajax/gursimranaidev@gmail.com';
+    const method = 'POST';
+
+    const senderName = nameInput.value.trim();
+    const senderEmail = emailInput.value.trim();
+    const subject = subjectInput.value.trim();
+    const message = messageInput.value.trim();
+
+    const payload = {
+      name: senderName,
+      email: senderEmail,
+      subject: subject,
+      message: message,
+      _replyto: senderEmail,
+      _subject: "New Portfolio Contact"
+    };
+
+    let response = null;
+    let rawText = '';
+    let parsedJson = null;
+    let responseHeaders = {};
+    let fetchError = null;
+
+    try {
+      // 1. Set Loading State
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>SENDING...</span> <i class="fas fa-spinner fa-spin"></i>`;
+      if (alertBox) alertBox.style.display = 'none';
+
+      // 2. Submit Form via AJAX POST
+      response = await fetch(endpoint, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      // Extract response headers
+      if (response && response.headers) {
+        response.headers.forEach((val, key) => {
+          responseHeaders[key] = val;
+        });
+      }
+
+      // Read raw text and parse JSON if possible
+      rawText = await response.text().catch(() => '');
+      try {
+        parsedJson = JSON.parse(rawText);
+      } catch (pErr) {
+        parsedJson = null;
+      }
+
+      const data = parsedJson || {};
+      const isConfirmedSuccess = response.ok && 
+        (data.success === 'true' || data.success === true || data.success === 'True') &&
+        data.success !== 'false' && data.success !== false;
+
+      if (isConfirmedSuccess) {
+        // Log successful submission details
+        console.log("=== FORMSUBMIT SUBMISSION SUCCESS ===");
+        console.log("1. Request URL:", endpoint);
+        console.log("2. HTTP Method:", method);
+        console.log("3. Request Payload:", payload);
+        console.log("4. Response Status:", response.status);
+        console.log("5. Response StatusText:", response.statusText);
+        console.log("6. Response Headers:", responseHeaders);
+        console.log("7. Raw Response Body:", rawText);
+        console.log("8. Parsed JSON Response:", parsedJson);
+        console.log("9. JS/Fetch Error: None");
+
+        form.reset();
+        clearErrors();
+
+        if (alertBox) {
+          alertBox.style.display = 'block';
+          alertBox.className = 'form-status-alert alert-success';
+          alertBox.innerHTML = `
+            <div class="alert-title"><i class="fas fa-check-circle"></i> Message sent successfully!</div>
+            <div class="alert-desc">Thanks for reaching out. I'll get back to you soon.</div>
+          `;
+        }
+        showToast('Message sent successfully!');
+      } else {
+        const errorDetail = (data && data.message) ? data.message : `HTTP ${response.status} - FormSubmit returned success: ${data.success || 'false'}`;
+        fetchError = new Error(errorDetail);
+        throw fetchError;
+      }
+    } catch (error) {
+      clearTimeout(timeoutId);
+      fetchError = error;
+
+      // Log ALL 9 debugging items via console.error on failure
+      console.error("=== FORMSUBMIT SUBMISSION DEBUG ERROR ===");
+      console.error("1. Request URL:", endpoint);
+      console.error("2. HTTP Method:", method);
+      console.error("3. Request Payload:", payload);
+      console.error("4. Response Status:", response ? response.status : "N/A (Network / Abort Failure)");
+      console.error("5. Response StatusText:", response ? response.statusText : "N/A (Network / Abort Failure)");
+      console.error("6. Response Headers:", responseHeaders);
+      console.error("7. Raw Response Body:", rawText || "(Empty or Network Error)");
+      console.error("8. Parsed JSON Response:", parsedJson || "(Failed to parse JSON or null)");
+      console.error("9. JS/Fetch Error:", fetchError ? fetchError.message : "Unknown error");
+
+      const techErrorMsg = (error.name === 'AbortError') 
+        ? "Request timed out after 15 seconds." 
+        : (parsedJson && parsedJson.message) || error.message || (response ? `HTTP ${response.status}` : "Network/CORS error");
+
+      if (alertBox) {
+        alertBox.style.display = 'block';
+        alertBox.className = 'form-status-alert alert-error';
+        
+        // Development mode check (localhost, 127.0.0.1, file:, or dev environment)
+        const isDevMode = window.location.hostname === 'localhost' || 
+                          window.location.hostname === '127.0.0.1' || 
+                          window.location.protocol === 'file:' || 
+                          window.location.port !== '';
+
+        const devTechErrorHtml = isDevMode 
+          ? `<div class="alert-tech-error" style="margin-top: 0.6rem; font-family: monospace; font-size: 0.8rem; color: #ff8a8a; border-top: 1px dashed rgba(255,82,82,0.3); padding-top: 0.4rem; word-break: break-all;">Technical error: ${techErrorMsg}</div>` 
+          : '';
+
+        alertBox.innerHTML = `
+          <div class="alert-title"><i class="fas fa-exclamation-circle"></i> Unable to send your message.</div>
+          <div class="alert-desc">
+            Please try again or email me directly at <a href="mailto:gursimranaidev@gmail.com" class="alert-email-link">gursimranaidev@gmail.com</a>.
+            ${devTechErrorHtml}
+          </div>
+        `;
+      }
+    } finally {
+      // ALWAYS Reset Loading State
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnContent;
+    }
+  });
 }
 
 function showToast(message) {
