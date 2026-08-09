@@ -1686,20 +1686,35 @@ function initAdminCMS() {
   if (cancelImageInsertBtn) cancelImageInsertBtn.onclick = () => insertImageModal.classList.remove('active');
 
   if (confirmImageInsertBtn) {
-    confirmImageInsertBtn.onclick = () => {
-      const alt = (imgAltInput ? imgAltInput.value.trim() : '') || 'Article Image';
+    confirmImageInsertBtn.onclick = async () => {
+      const alt = (imgAltInput ? imgAltInput.value.trim() : '') || 'Image';
       let url = imgUrlInput ? imgUrlInput.value.trim() : '';
 
       if (imgFileInput && imgFileInput.files && imgFileInput.files[0]) {
         const file = imgFileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          url = e.target.result;
-          insertMarkdownText(`![${alt}](${url})`);
-          insertImageModal.classList.remove('active');
-        };
-        reader.readAsDataURL(file);
-      } else if (url) {
+        if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+          showToast("Uploading image to Supabase Storage...");
+          const filePath = `content-${Date.now()}-${file.name.replace(/[^\w.-]/g, '_')}`;
+          const { data, error } = await supabaseClient.storage.from('project-images').upload(filePath, file);
+          if (!error && data) {
+            const { data: pubData } = supabaseClient.storage.from('project-images').getPublicUrl(filePath);
+            if (pubData && pubData.publicUrl) {
+              url = pubData.publicUrl;
+            }
+          }
+        }
+        if (!url) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            insertMarkdownText(`![${alt}](${e.target.result})`);
+            insertImageModal.classList.remove('active');
+          };
+          reader.readAsDataURL(file);
+          return;
+        }
+      }
+
+      if (url) {
         insertMarkdownText(`![${alt}](${url})`);
         insertImageModal.classList.remove('active');
       } else {
@@ -1709,13 +1724,19 @@ function initAdminCMS() {
   }
 
   function insertMarkdownText(ins) {
-    if (!edContentTextarea) return;
-    const start = edContentTextarea.selectionStart;
-    const end = edContentTextarea.selectionEnd;
-    const text = edContentTextarea.value;
-    edContentTextarea.value = text.substring(0, start) + ins + text.substring(end);
-    updateEditorMetrics();
-    updateLivePreview();
+    const activeTextarea = (document.getElementById('adminProjectEditorView')?.style.display === 'block')
+      ? document.getElementById('projContentTextarea')
+      : edContentTextarea;
+
+    if (!activeTextarea) return;
+    const start = activeTextarea.selectionStart || 0;
+    const end = activeTextarea.selectionEnd || 0;
+    const text = activeTextarea.value || '';
+    activeTextarea.value = text.substring(0, start) + ins + text.substring(end);
+    if (activeTextarea === edContentTextarea) {
+      updateEditorMetrics();
+      updateLivePreview();
+    }
   }
 
   // --- Article Editor Logic ---
@@ -2178,13 +2199,22 @@ function initProjectsSection() {
   const categoriesNav = document.getElementById('projectCategories');
   if (!container) return;
 
-  // Render Public Categories
+  // Render Public Categories with custom icons
   if (categoriesNav) {
-    const categories = ['All Projects', 'LLMs & RAG', 'Computer Vision', 'MLOps & Infra', 'NLP', 'Data Science', 'Deep Learning', 'Other'];
+    const categories = [
+      { name: 'All Projects', icon: '✦', key: 'All' },
+      { name: 'LLMs & RAG', icon: '◉', key: 'LLMs & RAG' },
+      { name: 'Computer Vision', icon: '◉', key: 'Computer Vision' },
+      { name: 'MLOps & Infra', icon: '◇', key: 'MLOps & Infra' },
+      { name: 'NLP', icon: '▣', key: 'NLP' },
+      { name: 'Data Science', icon: '▥', key: 'Data Science' },
+      { name: 'Deep Learning', icon: '✦', key: 'Deep Learning' },
+      { name: 'Other', icon: '•••', key: 'Other' }
+    ];
+
     categoriesNav.innerHTML = categories.map(cat => {
-      const catKey = cat === 'All Projects' ? 'All' : cat;
-      const isActive = activeProjFilterCategory === catKey;
-      return `<button class="category-btn ${isActive ? 'active' : ''}" data-projcat="${catKey}">${cat}</button>`;
+      const isActive = activeProjFilterCategory === cat.key;
+      return `<button class="category-btn ${isActive ? 'active' : ''}" data-projcat="${cat.key}"><span style="opacity: 0.8; font-size: 0.85em;">${cat.icon}</span> ${cat.name}</button>`;
     }).join('');
 
     categoriesNav.querySelectorAll('.category-btn').forEach(btn => {

@@ -342,84 +342,42 @@
       <div style="text-align: center; margin-bottom: 2rem;">
         <span class="section-label">MY PORTFOLIO</span>
         <h2 class="section-title">Featured ML Projects</h2>
+        <p style="color: var(--accent-color); font-weight: 500; font-size: 1.05rem; margin-top: 0.5rem;"
+          id="portfolioSubHeading">Building in public. One project at a time.</p>
       </div>
 
       <!-- Filter Tabs -->
-      <div class="portfolio-filter">
-        <button class="filter-btn active" data-filter="all">All Projects</button>
-        <button class="filter-btn" data-filter="llm">LLMs & RAG</button>
-        <button class="filter-btn" data-filter="vision">Computer Vision</button>
-        <button class="filter-btn" data-filter="mlops">MLOps & Infra</button>
+      <div class="knowledge-categories" id="projectCategories" style="margin-bottom: 2.5rem; justify-content: center;">
+        <!-- Dynamically rendered category buttons -->
       </div>
 
-      <div class="portfolio-grid">
-        <!-- Project 1 -->
-        <div class="project-card" data-category="llm">
-          <div class="project-img-wrapper">
-            <img src="assets/project_llm.jpg" alt="NeuralRAG Engine" class="project-img">
-            <span class="project-badge">LLM & RAG</span>
-          </div>
-          <div class="project-content">
-            <h3 class="project-title">NeuralRAG Enterprise Engine</h3>
-            <p class="project-desc">
-              High-throughput hybrid retrieval-augmented generation framework with 4-bit vector quantization and
-              reranking.
-            </p>
-            <div class="project-metrics">
-              <span class="metric-tag">Latency: <strong>42ms</strong></span>
-              <span class="metric-tag">Accuracy: <strong>96.8%</strong></span>
-            </div>
-            <div class="project-footer">
-              <a href="https://github.com/gursimranai" target="_blank" class="project-link">GitHub Repo <i
-                  class="fas fa-arrow-right"></i></a>
-            </div>
-          </div>
+      <!-- Main Dynamic Projects Grid -->
+      <div class="portfolio-grid" id="projectGrid" style="display: none;">
+        <!-- Dynamically rendered project cards from Supabase -->
+      </div>
+
+      <!-- Honest Empty State (Zero published projects) -->
+      <div class="proj-empty-card" id="projectEmptyState">
+        <div class="proj-empty-badge">
+          <span class="pulsing-dot"></span> Projects in Progress
         </div>
 
-        <!-- Project 2 -->
-        <div class="project-card" data-category="vision">
-          <div class="project-img-wrapper">
-            <img src="assets/project_vision.jpg" alt="EdgeVision Perception" class="project-img">
-            <span class="project-badge">Computer Vision</span>
-          </div>
-          <div class="project-content">
-            <h3 class="project-title">EdgeVision Real-Time Tracker</h3>
-            <p class="project-desc">
-              TensorRT-accelerated multi-object segmentation and 3D bounding box detection for industrial robotics.
-            </p>
-            <div class="project-metrics">
-              <span class="metric-tag">FPS: <strong>120 FPS</strong></span>
-              <span class="metric-tag">mAP@50: <strong>91.4%</strong></span>
-            </div>
-            <div class="project-footer">
-              <a href="https://github.com/gursimranai" target="_blank" class="project-link">GitHub Repo <i
-                  class="fas fa-arrow-right"></i></a>
-            </div>
-          </div>
-        </div>
+        <h3 class="proj-empty-title">Projects in <span class="gradient-text-accent">Progress</span></h3>
 
-        <!-- Project 3 -->
-        <div class="project-card" data-category="mlops">
-          <div class="project-img-wrapper">
-            <img src="assets/project_mlops.jpg" alt="Kubeflow Telemetry" class="project-img">
-            <span class="project-badge">MLOps & Infra</span>
-          </div>
-          <div class="project-content">
-            <h3 class="project-title">Autonomous MLOps Telemetry</h3>
-            <p class="project-desc">
-              Production Kubernetes cluster deployment with automated data drift detection, Triton scaling, and
-              zero-downtime rollouts.
-            </p>
-            <div class="project-metrics">
-              <span class="metric-tag">Uptime: <strong>99.99%</strong></span>
-              <span class="metric-tag">Nodes: <strong>64 GPU</strong></span>
-            </div>
-            <div class="project-footer">
-              <a href="https://github.com/gursimranai" target="_blank" class="project-link">GitHub Repo <i
-                  class="fas fa-arrow-right"></i></a>
-            </div>
-          </div>
-        </div>
+        <p class="proj-empty-desc">
+          I'm currently developing my foundation in Artificial Intelligence and Machine Learning through structured
+          learning, experimentation, and hands-on projects.
+        </p>
+
+        <p class="proj-empty-desc" style="font-size: 0.93rem; opacity: 0.9;">
+          My real-world projects will be published here as I <span class="proj-empty-highlight">build</span>, <span
+            class="proj-empty-highlight">deploy</span>, <span class="proj-empty-highlight">test</span>, and <span
+            class="proj-empty-highlight">document</span> them.
+        </p>
+
+        <a href="https://github.com/gursimranai" target="_blank" class="btn-cta-journey" id="emptyStateJourneyBtn">
+          🚀 View My AI/ML Journey <i class="fas fa-arrow-right"></i>
+        </a>
       </div>
     </div>
   </section>
@@ -616,25 +574,32 @@
         <div class="article-reader-layout">
           <!-- Main Project Detail Area -->
           <article class="article-main-content">
-            <div id="projCoverHeroWrapper" style="display:none; margin-bottom: 1.5rem; border-radius: 10px; overflow: hidden; max-height: 400px; border: 1px solid var(--border-color);">
+            <div id="projCoverHeroWrapper"
+              style="display:none; margin-bottom: 1.5rem; border-radius: 10px; overflow: hidden; max-height: 400px; border: 1px solid var(--border-color);">
               <img id="projDetailCoverImg" src="" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
 
             <div class="article-header-meta">
               <span class="article-badge" id="projDetailBadge">AI / ML</span>
               <h1 class="article-reader-title" id="projDetailTitle">Project Title</h1>
-              <p style="font-size: 1.1rem; color: var(--text-secondary); margin-top: 0.5rem; line-height: 1.6;" id="projDetailShortDesc"></p>
+              <p style="font-size: 1.1rem; color: var(--text-secondary); margin-top: 0.5rem; line-height: 1.6;"
+                id="projDetailShortDesc"></p>
 
               <!-- Technologies Pills -->
               <div class="article-tags-wrapper" id="projDetailTech" style="margin-top: 1rem;"></div>
 
               <!-- Action Links (Only rendered if URL exists) -->
-              <div id="projDetailLinksRow" style="display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.5rem;"></div>
+              <div id="projDetailLinksRow" style="display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.5rem;">
+              </div>
 
               <!-- Performance Metrics Grid -->
-              <div id="projDetailMetricsSection" style="display: none; margin-top: 1.8rem; background: var(--bg-secondary); padding: 1.2rem; border-radius: 8px; border: 1px solid var(--border-color);">
-                <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-color); margin-bottom: 0.8rem;"><i class="fas fa-chart-line"></i> Performance Metrics</h4>
-                <div id="projDetailMetricsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem;"></div>
+              <div id="projDetailMetricsSection"
+                style="display: none; margin-top: 1.8rem; background: var(--bg-secondary); padding: 1.2rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                <h4
+                  style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-color); margin-bottom: 0.8rem;">
+                  <i class="fas fa-chart-line"></i> Performance Metrics</h4>
+                <div id="projDetailMetricsGrid"
+                  style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem;"></div>
               </div>
             </div>
 
@@ -788,11 +753,14 @@
         <div class="admin-dashboard-body">
 
           <!-- Dashboard Section Sub-Nav (Overview, Articles, Projects) -->
-          <div class="admin-section-nav" id="adminSectionNav" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.8rem;">
-            <button class="admin-sec-nav-btn active" id="secNavArticlesBtn" style="background: none; border: none; color: var(--accent-color); font-weight: 600; font-size: 1.05rem; cursor: pointer; padding: 0.3rem 0.6rem; border-bottom: 2px solid var(--accent-color);">
+          <div class="admin-section-nav" id="adminSectionNav"
+            style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.8rem;">
+            <button class="admin-sec-nav-btn active" id="secNavArticlesBtn"
+              style="background: none; border: none; color: var(--accent-color); font-weight: 600; font-size: 1.05rem; cursor: pointer; padding: 0.3rem 0.6rem; border-bottom: 2px solid var(--accent-color);">
               <i class="fas fa-newspaper"></i> Articles & Notes
             </button>
-            <button class="admin-sec-nav-btn" id="secNavProjectsBtn" style="background: none; border: none; color: var(--text-secondary); font-weight: 500; font-size: 1.05rem; cursor: pointer; padding: 0.3rem 0.6rem;">
+            <button class="admin-sec-nav-btn" id="secNavProjectsBtn"
+              style="background: none; border: none; color: var(--text-secondary); font-weight: 500; font-size: 1.05rem; cursor: pointer; padding: 0.3rem 0.6rem;">
               <i class="fas fa-project-diagram"></i> Featured ML Projects
             </button>
           </div>
@@ -944,11 +912,15 @@
                   <!-- Dynamically populated project rows -->
                 </tbody>
               </table>
-              <div id="adminProjTableEmptyState" class="admin-table-empty" style="display: none; padding: 2.5rem 1rem; text-align: center;">
-                <i class="fas fa-folder-open" style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 0.8rem;"></i>
+              <div id="adminProjTableEmptyState" class="admin-table-empty"
+                style="display: none; padding: 2.5rem 1rem; text-align: center;">
+                <i class="fas fa-folder-open"
+                  style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 0.8rem;"></i>
                 <h4 style="font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.3rem;">No projects yet.</h4>
-                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.2rem;">Create your first real AI/ML project when you're ready.</p>
-                <button class="btn btn-primary" id="emptyStateAddProjectBtn"><i class="fas fa-plus"></i> + Add Your First Project</button>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.2rem;">Create your first
+                  real AI/ML project when you're ready.</p>
+                <button class="btn btn-primary" id="emptyStateAddProjectBtn"><i class="fas fa-plus"></i> + Add Your
+                  First Project</button>
               </div>
             </div>
           </div>
@@ -1170,425 +1142,455 @@
         </div>
       </div>
 
-    <!-- 4. PROJECT EDITOR VIEW (#admin/projects/new & #admin/projects/edit/:id) -->
-    <div class="admin-view" id="adminProjectEditorView" style="display: none;">
-      <div class="admin-editor-layout">
+      <!-- 4. PROJECT EDITOR VIEW (#admin/projects/new & #admin/projects/edit/:id) -->
+      <div class="admin-view" id="adminProjectEditorView" style="display: none;">
+        <div class="admin-editor-layout">
 
-        <!-- Editor Topbar -->
-        <header class="editor-topbar">
-          <div class="editor-topbar-left">
-            <button class="btn-back-dashboard" id="backToProjectsDashboardBtn">
-              <i class="fas fa-arrow-left"></i> Projects Dashboard
-            </button>
-            <span class="editor-title-indicator" id="projectEditorHeaderTitle">New ML Project</span>
-          </div>
-
-          <div class="editor-topbar-center">
-            <span class="autosave-status" id="projAutosaveStatus">
-              <i class="fas fa-check-circle"></i> Ready
-            </span>
-          </div>
-
-          <div class="editor-topbar-right">
-            <button class="btn btn-outline" id="saveProjDraftBtn">
-              <i class="fas fa-save"></i> Save Draft
-            </button>
-            <button class="btn btn-primary" id="publishProjBtn">
-              <i class="fas fa-paper-plane"></i> Publish Project
-            </button>
-          </div>
-        </header>
-
-        <!-- Editor Main Workspace -->
-        <div class="editor-workspace">
-
-          <!-- Left Column: Project Settings & Links Pane -->
-          <div class="editor-settings-panel" style="max-height: 85vh; overflow-y: auto;">
-            <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--accent-color); margin-bottom: 1rem;"><i class="fas fa-cog"></i> Project Metadata</h4>
-
-            <div class="form-group">
-              <label for="projTitle">Project Title *</label>
-              <input type="text" id="projTitle" class="admin-input" placeholder="Customer Churn Prediction System">
+          <!-- Editor Topbar -->
+          <header class="editor-topbar">
+            <div class="editor-topbar-left">
+              <button class="btn-back-dashboard" id="backToProjectsDashboardBtn">
+                <i class="fas fa-arrow-left"></i> Projects Dashboard
+              </button>
+              <span class="editor-title-indicator" id="projectEditorHeaderTitle">New ML Project</span>
             </div>
 
-            <div class="form-group">
-              <label for="projSlug">URL Slug</label>
-              <input type="text" id="projSlug" class="admin-input" placeholder="customer-churn-prediction-system">
+            <div class="editor-topbar-center">
+              <span class="autosave-status" id="projAutosaveStatus">
+                <i class="fas fa-check-circle"></i> Ready
+              </span>
             </div>
 
-            <div class="form-group">
-              <label for="projCategory">Category</label>
-              <select id="projCategory" class="admin-select">
-                <option value="AI / Machine Learning">AI / Machine Learning</option>
-                <option value="LLMs & RAG">LLMs & RAG</option>
-                <option value="Computer Vision">Computer Vision</option>
-                <option value="NLP">NLP</option>
-                <option value="Generative AI">Generative AI</option>
-                <option value="MLOps & Infrastructure">MLOps & Infrastructure</option>
-                <option value="Data Science">Data Science</option>
-                <option value="Deep Learning">Deep Learning</option>
-                <option value="Reinforcement Learning">Reinforcement Learning</option>
-                <option value="Other">Other</option>
-              </select>
+            <div class="editor-topbar-right">
+              <button class="btn btn-outline" id="saveProjDraftBtn">
+                <i class="fas fa-save"></i> Save Draft
+              </button>
+              <button class="btn btn-primary" id="publishProjBtn">
+                <i class="fas fa-paper-plane"></i> Publish Project
+              </button>
             </div>
+          </header>
 
-            <div class="form-group">
-              <label for="projShortDesc">Short Summary (for card)</label>
-              <textarea id="projShortDesc" class="admin-textarea" rows="2" placeholder="Brief project summary..."></textarea>
-            </div>
+          <!-- Editor Main Workspace -->
+          <div class="editor-workspace">
 
-            <div class="form-group">
-              <label for="projTech">Technologies (Comma-separated)</label>
-              <input type="text" id="projTech" class="admin-input" placeholder="Python, Scikit-learn, FastAPI, Docker">
-            </div>
+            <!-- Left Column: Project Settings & Links Pane -->
+            <div class="editor-settings-panel" style="max-height: 85vh; overflow-y: auto;">
+              <h4
+                style="font-size: 0.9rem; text-transform: uppercase; color: var(--accent-color); margin-bottom: 1rem;">
+                <i class="fas fa-cog"></i> Project Metadata</h4>
 
-            <div class="form-group">
-              <label for="projCoverUrl">Cover Image (Supabase Storage or URL)</label>
-              <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-                <input type="url" id="projCoverUrl" class="admin-input" placeholder="https://example.com/cover.jpg">
-                <button type="button" class="btn btn-outline" id="uploadProjCoverBtn" style="white-space: nowrap; font-size: 0.8rem; padding: 0.4rem 0.8rem;"><i class="fas fa-upload"></i> Upload</button>
-                <input type="file" id="projCoverFileInput" accept="image/*" style="display: none;">
+              <div class="form-group">
+                <label for="projTitle">Project Title *</label>
+                <input type="text" id="projTitle" class="admin-input" placeholder="Customer Churn Prediction System">
               </div>
-              <div id="projCoverPreviewWrapper" style="display: none; text-align: center; background: var(--bg-main); border: 1px dashed var(--border-color); border-radius: 6px; padding: 0.5rem;">
-                <img id="projCoverPreviewImg" src="" style="max-width: 100%; max-height: 120px; object-fit: cover; border-radius: 4px;">
-                <button type="button" id="removeProjCoverBtn" style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 0.75rem; margin-top: 0.4rem; display: block; width: 100%;"><i class="fas fa-trash"></i> Remove Image</button>
+
+              <div class="form-group">
+                <label for="projSlug">URL Slug</label>
+                <input type="text" id="projSlug" class="admin-input" placeholder="customer-churn-prediction-system">
+              </div>
+
+              <div class="form-group">
+                <label for="projCategory">Category</label>
+                <select id="projCategory" class="admin-select">
+                  <option value="AI / Machine Learning">AI / Machine Learning</option>
+                  <option value="LLMs & RAG">LLMs & RAG</option>
+                  <option value="Computer Vision">Computer Vision</option>
+                  <option value="NLP">NLP</option>
+                  <option value="Generative AI">Generative AI</option>
+                  <option value="MLOps & Infrastructure">MLOps & Infrastructure</option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="Deep Learning">Deep Learning</option>
+                  <option value="Reinforcement Learning">Reinforcement Learning</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="projShortDesc">Short Summary (for card)</label>
+                <textarea id="projShortDesc" class="admin-textarea" rows="2"
+                  placeholder="Brief project summary..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="projTech">Technologies (Comma-separated)</label>
+                <input type="text" id="projTech" class="admin-input"
+                  placeholder="Python, Scikit-learn, FastAPI, Docker">
+              </div>
+
+              <div class="form-group">
+                <label for="projCoverUrl">Cover Image (Supabase Storage or URL)</label>
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                  <input type="url" id="projCoverUrl" class="admin-input" placeholder="https://example.com/cover.jpg">
+                  <button type="button" class="btn btn-outline" id="uploadProjCoverBtn"
+                    style="white-space: nowrap; font-size: 0.8rem; padding: 0.4rem 0.8rem;"><i
+                      class="fas fa-upload"></i> Upload</button>
+                  <input type="file" id="projCoverFileInput" accept="image/*" style="display: none;">
+                </div>
+                <div id="projCoverPreviewWrapper"
+                  style="display: none; text-align: center; background: var(--bg-main); border: 1px dashed var(--border-color); border-radius: 6px; padding: 0.5rem;">
+                  <img id="projCoverPreviewImg" src=""
+                    style="max-width: 100%; max-height: 120px; object-fit: cover; border-radius: 4px;">
+                  <button type="button" id="removeProjCoverBtn"
+                    style="background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 0.75rem; margin-top: 0.4rem; display: block; width: 100%;"><i
+                      class="fas fa-trash"></i> Remove Image</button>
+                </div>
+              </div>
+
+              <h4
+                style="font-size: 0.9rem; text-transform: uppercase; color: var(--accent-color); margin-top: 1.5rem; margin-bottom: 1rem;">
+                <i class="fas fa-link"></i> Project Links</h4>
+              <div class="form-group"><label for="projGithub">GitHub Repository URL</label><input type="url"
+                  id="projGithub" class="admin-input" placeholder="https://github.com/..."></div>
+              <div class="form-group"><label for="projLiveDemo">Live Demo URL</label><input type="url" id="projLiveDemo"
+                  class="admin-input" placeholder="https://..."></div>
+              <div class="form-group"><label for="projDocs">Documentation URL</label><input type="url" id="projDocs"
+                  class="admin-input" placeholder="https://..."></div>
+              <div class="form-group"><label for="projPaper">Research Paper URL</label><input type="url" id="projPaper"
+                  class="admin-input" placeholder="https://..."></div>
+              <div class="form-group"><label for="projDemoVideo">Demo Video URL</label><input type="url"
+                  id="projDemoVideo" class="admin-input" placeholder="https://youtube.com/..."></div>
+
+              <h4
+                style="font-size: 0.9rem; text-transform: uppercase; color: var(--accent-color); margin-top: 1.5rem; margin-bottom: 1rem;">
+                <i class="fas fa-chart-line"></i> Performance Metrics</h4>
+              <div id="projMetricsEditorList"
+                style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.8rem;"></div>
+              <button type="button" class="btn btn-outline" id="addMetricBtn"
+                style="width: 100%; font-size: 0.85rem; padding: 0.4rem;"><i class="fas fa-plus"></i> Add
+                Metric</button>
+
+              <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <label
+                  style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; color: var(--text-primary);">
+                  <input type="checkbox" id="projFeatured"> <i class="fas fa-star" style="color: gold;"></i> Featured
+                  Project
+                </label>
               </div>
             </div>
 
-            <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--accent-color); margin-top: 1.5rem; margin-bottom: 1rem;"><i class="fas fa-link"></i> Project Links</h4>
-            <div class="form-group"><label for="projGithub">GitHub Repository URL</label><input type="url" id="projGithub" class="admin-input" placeholder="https://github.com/..."></div>
-            <div class="form-group"><label for="projLiveDemo">Live Demo URL</label><input type="url" id="projLiveDemo" class="admin-input" placeholder="https://..."></div>
-            <div class="form-group"><label for="projDocs">Documentation URL</label><input type="url" id="projDocs" class="admin-input" placeholder="https://..."></div>
-            <div class="form-group"><label for="projPaper">Research Paper URL</label><input type="url" id="projPaper" class="admin-input" placeholder="https://..."></div>
-            <div class="form-group"><label for="projDemoVideo">Demo Video URL</label><input type="url" id="projDemoVideo" class="admin-input" placeholder="https://youtube.com/..."></div>
-
-            <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--accent-color); margin-top: 1.5rem; margin-bottom: 1rem;"><i class="fas fa-chart-line"></i> Performance Metrics</h4>
-            <div id="projMetricsEditorList" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.8rem;"></div>
-            <button type="button" class="btn btn-outline" id="addMetricBtn" style="width: 100%; font-size: 0.85rem; padding: 0.4rem;"><i class="fas fa-plus"></i> Add Metric</button>
-
-            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; color: var(--text-primary);">
-                <input type="checkbox" id="projFeatured"> <i class="fas fa-star" style="color: gold;"></i> Featured Project
-              </label>
-            </div>
-          </div>
-
-          <!-- Right Column: Content Editor & Live Preview -->
-          <div class="editor-content-panel">
-            <div class="editor-toolbar">
-              <div class="editor-mode-toggle">
-                <button class="mode-btn active" id="projModeWriteBtn" data-mode="write"><i class="fas fa-edit"></i> Write</button>
-                <button class="mode-btn" id="projModePreviewBtn" data-mode="preview"><i class="fas fa-eye"></i> Preview</button>
-                <button class="mode-btn" id="projModeSplitBtn" data-mode="split"><i class="fas fa-columns"></i> Split View</button>
+            <!-- Right Column: Content Editor & Live Preview -->
+            <div class="editor-content-panel">
+              <div class="editor-toolbar">
+                <div class="editor-mode-toggle">
+                  <button class="mode-btn active" id="projModeWriteBtn" data-mode="write"><i class="fas fa-edit"></i>
+                    Write</button>
+                  <button class="mode-btn" id="projModePreviewBtn" data-mode="preview"><i class="fas fa-eye"></i>
+                    Preview</button>
+                  <button class="mode-btn" id="projModeSplitBtn" data-mode="split"><i class="fas fa-columns"></i> Split
+                    View</button>
+                </div>
               </div>
-            </div>
 
-            <div class="editor-pane-wrapper mode-write" id="projEditorPaneWrapper">
-              <div class="editor-write-pane">
-                <textarea id="projContentTextarea" placeholder="# Project Overview&#10;&#10;## Problem&#10;&#10;## Solution&#10;&#10;## Architecture&#10;&#10;## Results..."></textarea>
-              </div>
-              <div class="editor-preview-pane">
-                <div class="article-reader-layout">
-                  <article class="article-main-content">
-                    <h1 class="article-reader-title" id="projPrevTitle">Project Title Preview</h1>
-                    <div class="article-content-html" id="projPrevBody"></div>
-                  </article>
+              <div class="editor-pane-wrapper mode-write" id="projEditorPaneWrapper">
+                <div class="editor-write-pane">
+                  <textarea id="projContentTextarea"
+                    placeholder="# Project Overview&#10;&#10;## Problem&#10;&#10;## Solution&#10;&#10;## Architecture&#10;&#10;## Results..."></textarea>
+                </div>
+                <div class="editor-preview-pane">
+                  <div class="article-reader-layout">
+                    <article class="article-main-content">
+                      <h1 class="article-reader-title" id="projPrevTitle">Project Title Preview</h1>
+                      <div class="article-content-html" id="projPrevBody"></div>
+                    </article>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Confirmation Modal for Delete -->
-  <div class="modal-backdrop" id="confirmDeleteModal" aria-hidden="true" style="z-index: 3000;">
-    <div class="modal-content" style="max-width: 440px; text-align: center;">
-      <div style="font-size: 2.8rem; color: #e74c3c; margin-bottom: 1rem;"><i class="fas fa-exclamation-circle"></i>
-      </div>
-      <h3 style="margin-bottom: 0.6rem; color: var(--text-primary);">Delete Article Permanently?</h3>
-      <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 1.8rem;">
-        Are you sure you want to permanently delete <strong id="deleteTargetTitle"
-          style="color:var(--text-primary);">this item</strong>? This action cannot be undone.
-      </p>
-      <div style="display: flex; gap: 1rem; justify-content: center;">
-        <button class="btn btn-outline" id="cancelDeleteBtn" style="padding: 0.55rem 1.4rem;">Cancel</button>
-        <button class="btn" id="confirmDeleteBtn"
-          style="background-color: #e74c3c; color: white; border: none; padding: 0.55rem 1.4rem;">Delete</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Insert Image Modal (Supports URL & Local Image File Upload) -->
-  <div class="modal-backdrop" id="insertImageModal" aria-hidden="true" style="z-index: 3100;">
-    <div class="modal-content" style="max-width: 500px;">
-      <div class="modal-header"
-        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; border-bottom:1px solid var(--border-color); padding-bottom:0.8rem;">
-        <h3 style="font-size:1.1rem; color:var(--text-primary);"><i class="fas fa-image"></i> Insert Image into Editor
-        </h3>
-        <button class="modal-close-btn" id="closeImageModalBtn"
-          style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:1.2rem;">&times;</button>
-      </div>
-
-      <div class="form-group">
-        <label for="imgAltInput">Alt Text / Description</label>
-        <input type="text" id="imgAltInput" class="admin-input" placeholder="e.g. Model architecture diagram">
-      </div>
-
-      <div class="form-group">
-        <label for="imgUrlInput">Image Web URL</label>
-        <input type="url" id="imgUrlInput" class="admin-input" placeholder="https://example.com/diagram.png">
-      </div>
-
-      <div style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin:0.8rem 0;">— OR UPLOAD LOCAL
-        IMAGE —</div>
-
-      <div class="form-group">
-        <label for="imgFileInput">Upload Image File (Optimized WebP)</label>
-        <input type="file" id="imgFileInput" class="admin-input" accept="image/*">
-      </div>
-
-      <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1.5rem;">
-        <button class="btn btn-outline" id="cancelImageInsertBtn">Cancel</button>
-        <button class="btn btn-primary" id="confirmImageInsertBtn"><i class="fas fa-plus"></i> Insert Image</button>
+    <!-- Confirmation Modal for Delete -->
+    <div class="modal-backdrop" id="confirmDeleteModal" aria-hidden="true" style="z-index: 3000;">
+      <div class="modal-content" style="max-width: 440px; text-align: center;">
+        <div style="font-size: 2.8rem; color: #e74c3c; margin-bottom: 1rem;"><i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h3 style="margin-bottom: 0.6rem; color: var(--text-primary);">Delete Article Permanently?</h3>
+        <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 1.8rem;">
+          Are you sure you want to permanently delete <strong id="deleteTargetTitle"
+            style="color:var(--text-primary);">this item</strong>? This action cannot be undone.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <button class="btn btn-outline" id="cancelDeleteBtn" style="padding: 0.55rem 1.4rem;">Cancel</button>
+          <button class="btn" id="confirmDeleteBtn"
+            style="background-color: #e74c3c; color: white; border: none; padding: 0.55rem 1.4rem;">Delete</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Export Choice Modal (JSON or Markdown) -->
-  <div class="modal-backdrop" id="exportChoiceModal" aria-hidden="true" style="z-index: 3100;">
-    <div class="modal-content" style="max-width: 460px; text-align:center;">
-      <div style="font-size:2.5rem; color:var(--accent-color); margin-bottom:0.8rem;"><i class="fas fa-file-export"></i>
-      </div>
-      <h3 style="margin-bottom:0.6rem; color:var(--text-primary);">Export Content Catalog</h3>
-      <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1.5rem;">
-        Choose your export format to back up your articles, notes, and research content without vendor lock-in.
-      </p>
+    <!-- Insert Image Modal (Supports URL & Local Image File Upload) -->
+    <div class="modal-backdrop" id="insertImageModal" aria-hidden="true" style="z-index: 3100;">
+      <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header"
+          style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; border-bottom:1px solid var(--border-color); padding-bottom:0.8rem;">
+          <h3 style="font-size:1.1rem; color:var(--text-primary);"><i class="fas fa-image"></i> Insert Image into Editor
+          </h3>
+          <button class="modal-close-btn" id="closeImageModalBtn"
+            style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:1.2rem;">&times;</button>
+        </div>
 
-      <div style="display:flex; gap:1rem; justify-content:center;">
-        <button class="btn btn-outline" id="exportJsonChoiceBtn" style="padding:0.7rem 1.4rem;">
-          <i class="fas fa-code"></i> Export JSON
-        </button>
-        <button class="btn btn-primary" id="exportMdChoiceBtn" style="padding:0.7rem 1.4rem;">
-          <i class="fab fa-markdown"></i> Export Markdown (.md)
-        </button>
-      </div>
-      <div style="margin-top:1.2rem;">
-        <button class="btn-back-portfolio" id="closeExportChoiceBtn">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Forgot Password Prompt Modal -->
-  <div class="modal-backdrop" id="forgotPasswordModal" aria-hidden="true" style="z-index: 3200;">
-    <div class="modal-content" style="max-width: 440px;">
-      <div class="modal-header"
-        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; border-bottom:1px solid var(--border-color); padding-bottom:0.8rem;">
-        <h3 style="font-size:1.1rem; color:var(--text-primary);"><i class="fas fa-key"></i> Reset Your Password</h3>
-        <button class="modal-close-btn" id="closeForgotModalBtn"
-          style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:1.2rem;">&times;</button>
-      </div>
-
-      <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1.2rem;">
-        Enter your admin email address below. We will send an official Supabase password reset link.
-      </p>
-
-      <form id="sendResetEmailForm">
         <div class="form-group">
-          <label for="forgotEmailInput">Admin Email Address</label>
-          <input type="email" id="forgotEmailInput" class="admin-input" value="gursimranaidev@gmail.com" required>
+          <label for="imgAltInput">Alt Text / Description</label>
+          <input type="text" id="imgAltInput" class="admin-input" placeholder="e.g. Model architecture diagram">
+        </div>
+
+        <div class="form-group">
+          <label for="imgUrlInput">Image Web URL</label>
+          <input type="url" id="imgUrlInput" class="admin-input" placeholder="https://example.com/diagram.png">
+        </div>
+
+        <div style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin:0.8rem 0;">— OR UPLOAD LOCAL
+          IMAGE —</div>
+
+        <div class="form-group">
+          <label for="imgFileInput">Upload Image File (Optimized WebP)</label>
+          <input type="file" id="imgFileInput" class="admin-input" accept="image/*">
         </div>
 
         <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1.5rem;">
-          <button type="button" class="btn btn-outline" id="cancelForgotBtn">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="confirmForgotBtn"><i class="fas fa-paper-plane"></i> Send
-            Reset Link</button>
+          <button class="btn btn-outline" id="cancelImageInsertBtn">Cancel</button>
+          <button class="btn btn-primary" id="confirmImageInsertBtn"><i class="fas fa-plus"></i> Insert Image</button>
         </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Contact Section -->
-  <section id="contact" class="contact">
-    <div class="container">
-      <div class="contact-header">
-        <span class="section-label">CONTACT ME</span>
-        <h2 class="section-title">Let's Connect</h2>
-        <p class="section-desc">
-          Have a project idea, internship opportunity, collaboration, or simply want to talk about AI and Machine
-          Learning? Feel free to reach out.
-        </p>
       </div>
+    </div>
 
-      <div class="contact-grid">
-        <!-- Left Side Information -->
-        <div class="contact-info">
-          <!-- Email Card -->
-          <div class="contact-card">
-            <div class="contact-card-icon">
-              <i class="fas fa-envelope"></i>
-            </div>
-            <div class="contact-card-body">
-              <h5 class="card-label">Email</h5>
-              <a href="https://mail.google.com/mail/?view=cm&fs=1&to=gursimranaidev@gmail.com" target="_blank"
-                rel="noopener noreferrer" class="card-value-link">gursimranaidev@gmail.com</a>
-              <a href="https://mail.google.com/mail/?view=cm&fs=1&to=gursimranaidev@gmail.com" target="_blank"
-                rel="noopener noreferrer" class="email-action-btn" id="sendEmailBtn">
-                Send an Email <i class="fas fa-arrow-right"></i>
-              </a>
-            </div>
+    <!-- Export Choice Modal (JSON or Markdown) -->
+    <div class="modal-backdrop" id="exportChoiceModal" aria-hidden="true" style="z-index: 3100;">
+      <div class="modal-content" style="max-width: 460px; text-align:center;">
+        <div style="font-size:2.5rem; color:var(--accent-color); margin-bottom:0.8rem;"><i
+            class="fas fa-file-export"></i>
+        </div>
+        <h3 style="margin-bottom:0.6rem; color:var(--text-primary);">Export Content Catalog</h3>
+        <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1.5rem;">
+          Choose your export format to back up your articles, notes, and research content without vendor lock-in.
+        </p>
+
+        <div style="display:flex; gap:1rem; justify-content:center;">
+          <button class="btn btn-outline" id="exportJsonChoiceBtn" style="padding:0.7rem 1.4rem;">
+            <i class="fas fa-code"></i> Export JSON
+          </button>
+          <button class="btn btn-primary" id="exportMdChoiceBtn" style="padding:0.7rem 1.4rem;">
+            <i class="fab fa-markdown"></i> Export Markdown (.md)
+          </button>
+        </div>
+        <div style="margin-top:1.2rem;">
+          <button class="btn-back-portfolio" id="closeExportChoiceBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Forgot Password Prompt Modal -->
+    <div class="modal-backdrop" id="forgotPasswordModal" aria-hidden="true" style="z-index: 3200;">
+      <div class="modal-content" style="max-width: 440px;">
+        <div class="modal-header"
+          style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; border-bottom:1px solid var(--border-color); padding-bottom:0.8rem;">
+          <h3 style="font-size:1.1rem; color:var(--text-primary);"><i class="fas fa-key"></i> Reset Your Password</h3>
+          <button class="modal-close-btn" id="closeForgotModalBtn"
+            style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:1.2rem;">&times;</button>
+        </div>
+
+        <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:1.2rem;">
+          Enter your admin email address below. We will send an official Supabase password reset link.
+        </p>
+
+        <form id="sendResetEmailForm">
+          <div class="form-group">
+            <label for="forgotEmailInput">Admin Email Address</label>
+            <input type="email" id="forgotEmailInput" class="admin-input" value="gursimranaidev@gmail.com" required>
           </div>
 
-          <!-- Professional Profiles Card -->
-          <div class="contact-card">
-            <div class="contact-card-icon">
-              <i class="fas fa-user-check"></i>
+          <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1.5rem;">
+            <button type="button" class="btn btn-outline" id="cancelForgotBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="confirmForgotBtn"><i class="fas fa-paper-plane"></i> Send
+              Reset Link</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+      <div class="container">
+        <div class="contact-header">
+          <span class="section-label">CONTACT ME</span>
+          <h2 class="section-title">Let's Connect</h2>
+          <p class="section-desc">
+            Have a project idea, internship opportunity, collaboration, or simply want to talk about AI and Machine
+            Learning? Feel free to reach out.
+          </p>
+        </div>
+
+        <div class="contact-grid">
+          <!-- Left Side Information -->
+          <div class="contact-info">
+            <!-- Email Card -->
+            <div class="contact-card">
+              <div class="contact-card-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="contact-card-body">
+                <h5 class="card-label">Email</h5>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=gursimranaidev@gmail.com" target="_blank"
+                  rel="noopener noreferrer" class="card-value-link">gursimranaidev@gmail.com</a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=gursimranaidev@gmail.com" target="_blank"
+                  rel="noopener noreferrer" class="email-action-btn" id="sendEmailBtn">
+                  Send an Email <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
             </div>
-            <div class="contact-card-body">
-              <h5 class="card-label">Professional Profiles</h5>
-              <div class="profile-links-group">
-                <a href="https://github.com/gursimranai" target="_blank" rel="noopener noreferrer"
-                  class="profile-button">
-                  <i class="fab fa-github"></i> GitHub
-                </a>
-                <a href="https://www.linkedin.com/in/gursimranai" target="_blank" rel="noopener noreferrer"
-                  class="profile-button">
-                  <i class="fab fa-linkedin"></i> LinkedIn
-                </a>
+
+            <!-- Professional Profiles Card -->
+            <div class="contact-card">
+              <div class="contact-card-icon">
+                <i class="fas fa-user-check"></i>
+              </div>
+              <div class="contact-card-body">
+                <h5 class="card-label">Professional Profiles</h5>
+                <div class="profile-links-group">
+                  <a href="https://github.com/gursimranai" target="_blank" rel="noopener noreferrer"
+                    class="profile-button">
+                    <i class="fab fa-github"></i> GitHub
+                  </a>
+                  <a href="https://www.linkedin.com/in/gursimranai" target="_blank" rel="noopener noreferrer"
+                    class="profile-button">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Availability Card -->
+            <div class="contact-card">
+              <div class="contact-card-icon">
+                <i class="fas fa-briefcase"></i>
+              </div>
+              <div class="contact-card-body">
+                <h5 class="card-label">Open To</h5>
+                <p class="availability-info">
+                  Internships &bull; Real-World Projects &bull; Collaborations &bull; Open Source
+                </p>
               </div>
             </div>
           </div>
 
-          <!-- Availability Card -->
-          <div class="contact-card">
-            <div class="contact-card-icon">
-              <i class="fas fa-briefcase"></i>
-            </div>
-            <div class="contact-card-body">
-              <h5 class="card-label">Open To</h5>
-              <p class="availability-info">
-                Internships &bull; Real-World Projects &bull; Collaborations &bull; Open Source
-              </p>
-            </div>
+          <!-- Right Side Contact Form -->
+          <div class="contact-form-container">
+            <form class="contact-form" id="contactForm" novalidate>
+              <!-- Honeypot anti-spam field -->
+              <input type="text" name="_honey" class="honey-field" tabindex="-1" autocomplete="off"
+                style="display:none;">
+
+              <div class="form-group">
+                <label for="contactName">Name <span class="required-star">*</span></label>
+                <input type="text" id="contactName" name="name" class="form-control" placeholder="Enter your name"
+                  required>
+                <span class="field-error" id="nameError"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="contactEmail">Email <span class="required-star">*</span></label>
+                <input type="email" id="contactEmail" name="email" class="form-control" placeholder="you@example.com"
+                  required>
+                <span class="field-error" id="emailError"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="contactSubject">Subject <span class="required-star">*</span></label>
+                <input type="text" id="contactSubject" name="subject" class="form-control"
+                  placeholder="Internship / Project / Collaboration" required>
+                <span class="field-error" id="subjectError"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="contactMessage">Message <span class="required-star">*</span></label>
+                <textarea id="contactMessage" name="message" class="form-control"
+                  placeholder="Tell me a little about your project, opportunity, or idea..." rows="5" required
+                  minlength="10"></textarea>
+                <span class="field-error" id="messageError"></span>
+              </div>
+
+              <!-- Form Status Alert Box for Success/Error -->
+              <div class="form-status-alert" id="formStatusAlert" style="display: none;"></div>
+
+              <button type="submit" class="btn btn-primary submit-btn" id="contactSubmitBtn">
+                <span>Send Message &rarr;</span>
+              </button>
+            </form>
           </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Right Side Contact Form -->
-        <div class="contact-form-container">
-          <form class="contact-form" id="contactForm" novalidate>
-            <!-- Honeypot anti-spam field -->
-            <input type="text" name="_honey" class="honey-field" tabindex="-1" autocomplete="off" style="display:none;">
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2026 Gursimran Singh. Built with gursimran.ai theme for ML Engineers.</p>
+      </div>
+    </footer>
 
-            <div class="form-group">
-              <label for="contactName">Name <span class="required-star">*</span></label>
-              <input type="text" id="contactName" name="name" class="form-control" placeholder="Enter your name"
-                required>
-              <span class="field-error" id="nameError"></span>
-            </div>
+    <!-- CV Viewer Modal -->
+    <div class="modal-backdrop" id="cvModal">
+      <div class="modal-content" style="padding: 1.5rem 1.8rem;">
+        <button class="close-modal-btn" id="closeCvModalBtn" style="top: 15px; right: 15px;">&times;</button>
+        <h3 style="margin-bottom: 0.25rem; color:var(--accent-color); font-size: 1.35rem;">Curriculum Vitae — Gursimran
+          Singh</h3>
+        <p style="color:var(--text-secondary); margin-bottom: 0.8rem; font-size: 0.88rem; font-weight: 500;">
+          Building Experience Beyond the Classroom
+        </p>
 
-            <div class="form-group">
-              <label for="contactEmail">Email <span class="required-star">*</span></label>
-              <input type="email" id="contactEmail" name="email" class="form-control" placeholder="you@example.com"
-                required>
-              <span class="field-error" id="emailError"></span>
-            </div>
+        <div
+          style="background:var(--bg-main); padding:0.9rem 1.15rem; border-radius:8px; border:1px solid var(--border-color); font-size:0.84rem; line-height:1.45; color:var(--text-secondary); margin-bottom: 1rem;">
+          <p style="margin-bottom: 0.45rem;">
+            <strong style="color:var(--text-primary);">Profile:</strong> B.Tech student specializing in Artificial
+            Intelligence & Machine Learning, focused on building a strong foundation in Python, Data Science, Machine
+            Learning, and AI through hands-on projects and continuous learning.
+          </p>
+          <p style="margin-bottom: 0.45rem;">
+            <strong style="color:var(--text-primary);">Core Skills:</strong> Python, NumPy, Pandas, Matplotlib, Seaborn,
+            Scikit-learn, Jupyter, Git & GitHub.
+          </p>
+          <p style="margin-bottom: 0.45rem;">
+            <strong style="color:var(--text-primary);">Currently Exploring:</strong> Statistics, Probability, Deep
+            Learning, PyTorch, SQL, Computer Vision, NLP, MLOps, and Generative AI.
+          </p>
+          <p style="margin-bottom: 0.45rem;">
+            <strong style="color:var(--text-primary);">Experience:</strong> Machine Learning Intern — Unified Mentor
+            (2026).
+          </p>
+          <p style="margin-bottom: 0.45rem;">
+            <strong style="color:var(--text-primary);">Featured Work:</strong> Complete AI & ML Journey — a public
+            repository documenting my learning through structured notes, notebooks, experiments, and projects.
+          </p>
+          <p style="margin-bottom: 0;">
+            <strong style="color:var(--text-primary);">Education:</strong> B.Tech — Computer Science & Engineering
+            (Artificial Intelligence & Machine Learning).
+          </p>
+        </div>
 
-            <div class="form-group">
-              <label for="contactSubject">Subject <span class="required-star">*</span></label>
-              <input type="text" id="contactSubject" name="subject" class="form-control"
-                placeholder="Internship / Project / Collaboration" required>
-              <span class="field-error" id="subjectError"></span>
-            </div>
-
-            <div class="form-group">
-              <label for="contactMessage">Message <span class="required-star">*</span></label>
-              <textarea id="contactMessage" name="message" class="form-control"
-                placeholder="Tell me a little about your project, opportunity, or idea..." rows="5" required
-                minlength="10"></textarea>
-              <span class="field-error" id="messageError"></span>
-            </div>
-
-            <!-- Form Status Alert Box for Success/Error -->
-            <div class="form-status-alert" id="formStatusAlert" style="display: none;"></div>
-
-            <button type="submit" class="btn btn-primary submit-btn" id="contactSubmitBtn">
-              <span>Send Message &rarr;</span>
-            </button>
-          </form>
+        <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+          <a href="#" class="btn btn-outline" id="viewResumeBtn"
+            onclick="alert('Opening Resume Preview...'); return false;"
+            style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; font-size: 0.85rem;">
+            <i class="fas fa-eye"></i> View Resume
+          </a>
+          <a href="#" class="btn btn-primary" id="downloadResumeBtn"
+            onclick="alert('Downloading CV PDF document...'); return false;"
+            style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; font-size: 0.85rem;">
+            <i class="fas fa-download"></i> Download Resume
+          </a>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2026 Gursimran Singh. Built with gursimran.ai theme for ML Engineers.</p>
-    </div>
-  </footer>
-
-  <!-- CV Viewer Modal -->
-  <div class="modal-backdrop" id="cvModal">
-    <div class="modal-content" style="padding: 1.5rem 1.8rem;">
-      <button class="close-modal-btn" id="closeCvModalBtn" style="top: 15px; right: 15px;">&times;</button>
-      <h3 style="margin-bottom: 0.25rem; color:var(--accent-color); font-size: 1.35rem;">Curriculum Vitae — Gursimran
-        Singh</h3>
-      <p style="color:var(--text-secondary); margin-bottom: 0.8rem; font-size: 0.88rem; font-weight: 500;">
-        Building Experience Beyond the Classroom
-      </p>
-
-      <div
-        style="background:var(--bg-main); padding:0.9rem 1.15rem; border-radius:8px; border:1px solid var(--border-color); font-size:0.84rem; line-height:1.45; color:var(--text-secondary); margin-bottom: 1rem;">
-        <p style="margin-bottom: 0.45rem;">
-          <strong style="color:var(--text-primary);">Profile:</strong> B.Tech student specializing in Artificial
-          Intelligence & Machine Learning, focused on building a strong foundation in Python, Data Science, Machine
-          Learning, and AI through hands-on projects and continuous learning.
-        </p>
-        <p style="margin-bottom: 0.45rem;">
-          <strong style="color:var(--text-primary);">Core Skills:</strong> Python, NumPy, Pandas, Matplotlib, Seaborn,
-          Scikit-learn, Jupyter, Git & GitHub.
-        </p>
-        <p style="margin-bottom: 0.45rem;">
-          <strong style="color:var(--text-primary);">Currently Exploring:</strong> Statistics, Probability, Deep
-          Learning, PyTorch, SQL, Computer Vision, NLP, MLOps, and Generative AI.
-        </p>
-        <p style="margin-bottom: 0.45rem;">
-          <strong style="color:var(--text-primary);">Experience:</strong> Machine Learning Intern — Unified Mentor
-          (2026).
-        </p>
-        <p style="margin-bottom: 0.45rem;">
-          <strong style="color:var(--text-primary);">Featured Work:</strong> Complete AI & ML Journey — a public
-          repository documenting my learning through structured notes, notebooks, experiments, and projects.
-        </p>
-        <p style="margin-bottom: 0;">
-          <strong style="color:var(--text-primary);">Education:</strong> B.Tech — Computer Science & Engineering
-          (Artificial Intelligence & Machine Learning).
-        </p>
-      </div>
-
-      <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
-        <a href="#" class="btn btn-outline" id="viewResumeBtn"
-          onclick="alert('Opening Resume Preview...'); return false;"
-          style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; font-size: 0.85rem;">
-          <i class="fas fa-eye"></i> View Resume
-        </a>
-        <a href="#" class="btn btn-primary" id="downloadResumeBtn"
-          onclick="alert('Downloading CV PDF document...'); return false;"
-          style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; font-size: 0.85rem;">
-          <i class="fas fa-download"></i> Download Resume
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Supabase JS SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Supabase Configuration -->
-  <script src="supabase-config.js"></script>
-  <!-- Main Application Script -->
-  <script src="script.js"></script>
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Configuration -->
+    <script src="supabase-config.js"></script>
+    <!-- Main Application Script -->
+    <script src="script.js"></script>
 </body>
 
 </html>
