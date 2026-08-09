@@ -25,7 +25,7 @@ function initParticleBackground() {
   const canvas = document.getElementById('particles-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  
+
   let width = (canvas.width = window.innerWidth);
   let height = (canvas.height = window.innerHeight);
 
@@ -172,7 +172,7 @@ function initMLPlayground() {
   if (sentimentInput) {
     sentimentInput.addEventListener('input', (e) => {
       const text = e.target.value.toLowerCase().trim();
-      
+
       const posWords = ['great', 'excellent', 'fast', 'superb', 'best', 'accurate', 'groundbreaking', 'scalable', 'efficient', 'outstanding', 'love', 'clean'];
       const negWords = ['bad', 'slow', 'error', 'laggy', 'overfit', 'failed', 'poor', 'bug', 'high loss', 'horrible', 'trash'];
 
@@ -499,7 +499,7 @@ function initContactForm() {
       }
 
       const data = parsedJson || {};
-      const isConfirmedSuccess = response.ok && 
+      const isConfirmedSuccess = response.ok &&
         (data.success === 'true' || data.success === true || data.success === 'True') &&
         data.success !== 'false' && data.success !== false;
 
@@ -549,22 +549,22 @@ function initContactForm() {
       console.error("8. Parsed JSON Response:", parsedJson || "(Failed to parse JSON or null)");
       console.error("9. JS/Fetch Error:", fetchError ? fetchError.message : "Unknown error");
 
-      const techErrorMsg = (error.name === 'AbortError') 
-        ? "Request timed out after 15 seconds." 
+      const techErrorMsg = (error.name === 'AbortError')
+        ? "Request timed out after 15 seconds."
         : (parsedJson && parsedJson.message) || error.message || (response ? `HTTP ${response.status}` : "Network/CORS error");
 
       if (alertBox) {
         alertBox.style.display = 'block';
         alertBox.className = 'form-status-alert alert-error';
-        
-        // Development mode check (localhost, 127.0.0.1, file:, or dev environment)
-        const isDevMode = window.location.hostname === 'localhost' || 
-                          window.location.hostname === '127.0.0.1' || 
-                          window.location.protocol === 'file:' || 
-                          window.location.port !== '';
 
-        const devTechErrorHtml = isDevMode 
-          ? `<div class="alert-tech-error" style="margin-top: 0.6rem; font-family: monospace; font-size: 0.8rem; color: #ff8a8a; border-top: 1px dashed rgba(255,82,82,0.3); padding-top: 0.4rem; word-break: break-all;">Technical error: ${techErrorMsg}</div>` 
+        // Development mode check (localhost, 127.0.0.1, file:, or dev environment)
+        const isDevMode = window.location.hostname === 'localhost' ||
+          window.location.hostname === '127.0.0.1' ||
+          window.location.protocol === 'file:' ||
+          window.location.port !== '';
+
+        const devTechErrorHtml = isDevMode
+          ? `<div class="alert-tech-error" style="margin-top: 0.6rem; font-family: monospace; font-size: 0.8rem; color: #ff8a8a; border-top: 1px dashed rgba(255,82,82,0.3); padding-top: 0.4rem; word-break: break-all;">Technical error: ${techErrorMsg}</div>`
           : '';
 
         alertBox.innerHTML = `
@@ -650,7 +650,7 @@ const KNOWLEDGE_CATEGORIES = [
   "Tutorials"
 ];
 
-];
+
 
 const DEFAULT_KNOWLEDGE_ITEMS = [
   {
@@ -816,7 +816,7 @@ function initKnowledgeSection() {
 
     // 2. Category Filter
     if (activeCategory !== 'All') {
-      items = items.filter(item => 
+      items = items.filter(item =>
         item.category.toLowerCase() === activeCategory.toLowerCase() ||
         (item.tags && item.tags.some(t => t.toLowerCase() === activeCategory.toLowerCase()))
       );
@@ -1150,7 +1150,7 @@ function initAdminCMS() {
   const editorView = document.getElementById('adminEditorView');
   const accessDeniedView = document.getElementById('adminAccessDeniedView');
   const resetPasswordView = document.getElementById('adminResetPasswordView');
-  
+
   const loginForm = document.getElementById('adminLoginForm');
   const loginErrorAlert = document.getElementById('adminLoginError');
   const loginSuccessAlert = document.getElementById('adminLoginSuccess');
@@ -1352,7 +1352,7 @@ function initAdminCMS() {
       e.preventDefault();
       const email = document.getElementById('adminEmailInput').value.trim().toLowerCase();
       const password = document.getElementById('adminPasswordInput').value;
-      
+
       if (loginErrorAlert) loginErrorAlert.style.display = 'none';
       if (loginSuccessAlert) loginSuccessAlert.style.display = 'none';
 
@@ -1364,7 +1364,7 @@ function initAdminCMS() {
 
       // Real Supabase Email + Password Sign-In
       const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      
+
       if (error) {
         console.error("Supabase Auth Error:", error.message, "| Status:", error.status || error.name);
         if (loginErrMsg) loginErrMsg.textContent = error.message || "Invalid email or password.";
@@ -1523,7 +1523,7 @@ function initAdminCMS() {
     });
 
     if (activeSearch) {
-      filtered = filtered.filter(item => 
+      filtered = filtered.filter(item =>
         item.title.toLowerCase().includes(activeSearch) ||
         (item.category || '').toLowerCase().includes(activeSearch) ||
         (item.type || '').toLowerCase().includes(activeSearch)
@@ -1632,7 +1632,7 @@ function initAdminCMS() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(KNOWLEDGE_ITEMS, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `portfolio-cms-export-${new Date().toISOString().slice(0,10)}.json`);
+      downloadAnchor.setAttribute("download", `portfolio-cms-export-${new Date().toISOString().slice(0, 10)}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
@@ -1883,7 +1883,7 @@ function initAdminCMS() {
     }
   };
   if (scheduleArticleBtn) scheduleArticleBtn.onclick = () => {
-    const time = prompt("Enter scheduled publication date (YYYY-MM-DD):", new Date().toISOString().slice(0,10));
+    const time = prompt("Enter scheduled publication date (YYYY-MM-DD):", new Date().toISOString().slice(0, 10));
     if (time) saveArticle('Scheduled');
   };
   if (backToDashboardBtn) backToDashboardBtn.onclick = () => {
@@ -1893,177 +1893,203 @@ function initAdminCMS() {
   };
 
   async function saveArticle(status = 'Draft', isAutosave = false) {
-      const titleVal = edTitle ? edTitle.value.trim() : '';
-      if (!titleVal && !isAutosave) {
-        alert("Please enter an article title.");
+    const titleVal = edTitle ? edTitle.value.trim() : '';
+    if (!titleVal && !isAutosave) {
+      alert("Please enter an article title.");
+      return;
+    }
+
+    const isEditMode = Boolean(activeEditingArticleId);
+    let baseSlug = (edSlug && edSlug.value.trim()) ? edSlug.value.trim() : (titleVal.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') || 'draft-article');
+    let finalSlug = baseSlug;
+
+    if (isEditMode) {
+      // Check if user changed slug to one already used by ANOTHER article
+      const otherItemWithSlug = KNOWLEDGE_ITEMS.find(i => i.slug === finalSlug && i.id !== activeEditingArticleId);
+      if (otherItemWithSlug) {
+        alert("This slug is already used by another article.");
+        return;
+      }
+    } else {
+      // CREATE Mode: Auto-generate unique slug if duplicate exists
+      let counter = 2;
+      while (KNOWLEDGE_ITEMS.some(i => i.slug === finalSlug)) {
+        finalSlug = `${baseSlug}-${counter}`;
+        counter++;
+      }
+    }
+
+    const descVal = edDescription ? edDescription.value.trim() : '';
+    const typeVal = edType ? edType.value : 'Article';
+    const catVal = edCategory ? edCategory.value : 'AI/ML';
+    const tagsArr = edTags ? edTags.value.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const contentVal = edContentTextarea ? edContentTextarea.value : '';
+    const readTimeVal = metricReadTime ? metricReadTime.textContent : '5 min read';
+    const wordCountVal = metricWords ? parseInt(metricWords.textContent.replace(/,/g, '')) || 0 : 0;
+    const seoTitleVal = edSeoTitle ? edSeoTitle.value.trim() : '';
+    const seoDescVal = edSeoDescription ? edSeoDescription.value.trim() : '';
+
+    const payload = {
+      title: titleVal || 'Untitled Draft',
+      slug: finalSlug,
+      description: descVal,
+      author: 'Gursimran Singh',
+      type: typeVal,
+      category: catVal,
+      tags: tagsArr,
+      content: contentVal,
+      read_time: readTimeVal,
+      word_count: wordCountVal,
+      status: status,
+      published: (status === 'Published'),
+      seo_title: seoTitleVal,
+      seo_description: seoDescVal,
+      updated_at: new Date().toISOString()
+    };
+
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      let res;
+      if (isEditMode) {
+        // UPDATE existing article in Supabase
+        const isUuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(activeEditingArticleId);
+        if (isUuid) {
+          res = await supabaseClient.from('articles').update(payload).eq('id', activeEditingArticleId).select().single();
+        } else {
+          // If non-UUID string ID (e.g. 'complete-ai-ml-journey'), update by slug
+          res = await supabaseClient.from('articles').update(payload).eq('slug', activeEditingArticleId).select().single();
+          if (res.error && res.error.code === 'PGRST116') {
+            res = await supabaseClient.from('articles').insert([payload]).select().single();
+          }
+        }
+      } else {
+        // INSERT genuinely new article in Supabase
+        res = await supabaseClient.from('articles').insert([payload]).select().single();
+      }
+
+      if (res.error) {
+        console.error("Supabase Save Error:", res.error);
+        if (!isAutosave) {
+          alert(`Unable to save article to Supabase: ${res.error.message || "Database permission failure."}`);
+        }
         return;
       }
 
-      const slugVal = edSlug && edSlug.value.trim() ? edSlug.value.trim() : (titleVal.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-') || 'draft-article');
-      const descVal = edDescription ? edDescription.value.trim() : '';
-      const typeVal = edType ? edType.value : 'Article';
-      const catVal = edCategory ? edCategory.value : 'AI/ML';
-      const tagsArr = edTags ? edTags.value.split(',').map(t => t.trim()).filter(Boolean) : [];
-      const contentVal = edContentTextarea ? edContentTextarea.value : '';
-      const readTimeVal = metricReadTime ? metricReadTime.textContent : '5 min read';
-      const wordCountVal = metricWords ? parseInt(metricWords.textContent.replace(/,/g, '')) || 0 : 0;
-      const seoTitleVal = edSeoTitle ? edSeoTitle.value.trim() : '';
-      const seoDescVal = edSeoDescription ? edSeoDescription.value.trim() : '';
-
-      const payload = {
-        title: titleVal || 'Untitled Draft',
-        slug: slugVal,
-        description: descVal,
-        author: 'Gursimran Singh',
-        type: typeVal,
-        category: catVal,
-        tags: tagsArr,
-        content: contentVal,
-        read_time: readTimeVal,
-        word_count: wordCountVal,
-        status: status,
-        published: (status === 'Published'),
-        seo_title: seoTitleVal,
-        seo_description: seoDescVal,
-        updated_at: new Date().toISOString()
-      };
-
-      if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-        let res;
-        const isRealUuid = activeEditingArticleId && !activeEditingArticleId.startsWith('art-') && activeEditingArticleId !== 'complete-ai-ml-journey';
-
-        if (isRealUuid) {
-          // UPDATE existing database row
-          res = await supabaseClient.from('articles').update(payload).eq('id', activeEditingArticleId).select().single();
-        } else {
-          // INSERT new database row
-          res = await supabaseClient.from('articles').insert([payload]).select().single();
-        }
-
-        if (res.error) {
-          console.error("Supabase Save Error:", res.error);
-          if (!isAutosave) {
-            alert(`Unable to save article to Supabase: ${res.error.message || "Database permission failure."}`);
-          }
-          return;
-        }
-
-        if (res.data) {
-          activeEditingArticleId = res.data.id;
-        }
-      }
-
-      // Re-fetch all articles from Supabase to guarantee 100% database persistence across refreshes
-      await fetchArticlesFromSupabase();
-      initKnowledgeSection();
-      renderDashboard();
-
-      if (!isAutosave) {
-        showToast(`Article successfully saved as ${status}!`);
-        logActivity(`Saved "${titleVal}" as ${status}.`);
-        window.location.hash = '#admin/dashboard';
-        showView(dashboardView);
+      if (res.data && res.data.id) {
+        activeEditingArticleId = res.data.id;
       }
     }
 
-    // Toggle Publish / Unpublish directly on Supabase
-    async function togglePublish(id, shouldPublish) {
-      const item = KNOWLEDGE_ITEMS.find(i => i.id === id);
-      const title = item ? item.title : 'Article';
+    // Re-fetch all articles from Supabase to guarantee 100% database persistence across refreshes
+    await fetchArticlesFromSupabase();
+    initKnowledgeSection();
+    renderDashboard();
 
-      if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-        const { error } = await supabaseClient
-          .from('articles')
-          .update({
-            published: shouldPublish,
-            status: shouldPublish ? 'Published' : 'Unpublished',
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', id);
-
-        if (error) {
-          alert(`Unable to update status on Supabase: ${error.message}`);
-          return;
-        }
-      }
-
-      await fetchArticlesFromSupabase();
-      initKnowledgeSection();
-      renderDashboard();
-      showToast(`Article "${title}" is now ${shouldPublish ? 'Published' : 'Unpublished'}.`);
-      logActivity(`Changed status of "${title}" to ${shouldPublish ? 'Published' : 'Unpublished'}.`);
-    }
-
-    // Duplicate Article
-    async function duplicateArticle(id) {
-      const item = KNOWLEDGE_ITEMS.find(i => i.id === id);
-      if (!item) return;
-
-      const dupPayload = {
-        title: `${item.title} (Copy)`,
-        slug: `${item.slug}-copy-${Date.now()}`,
-        description: item.description,
-        author: item.author,
-        type: item.type,
-        category: item.category,
-        tags: item.tags,
-        content: item.contentMarkdown || item.content,
-        status: 'Draft',
-        published: false
-      };
-
-      if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-        const { error } = await supabaseClient.from('articles').insert([dupPayload]);
-        if (error) {
-          alert(`Duplicate failed: ${error.message}`);
-          return;
-        }
-      }
-
-      await fetchArticlesFromSupabase();
-      renderDashboard();
-      showToast(`Duplicated draft created.`);
-      logActivity(`Duplicated "${item.title}".`);
-    }
-
-    // Confirm Delete
-    function confirmDelete(id) {
-      const item = KNOWLEDGE_ITEMS.find(i => i.id === id);
-      if (!item) return;
-      deleteTargetArticleId = id;
-      if (deleteTargetTitle) deleteTargetTitle.textContent = `"${item.title}"`;
-      if (confirmDeleteModal) confirmDeleteModal.classList.add('active');
-    }
-
-    if (cancelDeleteBtn) {
-      cancelDeleteBtn.onclick = () => {
-        if (confirmDeleteModal) confirmDeleteModal.classList.remove('active');
-      };
-    }
-
-    if (confirmDeleteBtn) {
-      confirmDeleteBtn.onclick = async () => {
-        if (deleteTargetArticleId) {
-          if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-            const { error } = await supabaseClient
-              .from('articles')
-              .delete()
-              .eq('id', deleteTargetArticleId);
-
-            if (error) {
-              alert(`Unable to delete article from Supabase: ${error.message}`);
-              if (confirmDeleteModal) confirmDeleteModal.classList.remove('active');
-              return;
-            }
-          }
-
-          await fetchArticlesFromSupabase();
-          initKnowledgeSection();
-          renderDashboard();
-          showToast(`Deleted article permanently.`);
-          logActivity(`Deleted article from Supabase.`);
-        }
-        if (confirmDeleteModal) confirmDeleteModal.classList.remove('active');
-      };
+    if (!isAutosave) {
+      showToast(`Article successfully saved as ${status}!`);
+      logActivity(`Saved "${titleVal}" as ${status}.`);
+      window.location.hash = '#admin/dashboard';
+      showView(dashboardView);
     }
   }
+
+  // Toggle Publish / Unpublish directly on Supabase
+  async function togglePublish(id, shouldPublish) {
+    const item = KNOWLEDGE_ITEMS.find(i => i.id === id);
+    const title = item ? item.title : 'Article';
+
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      const { error } = await supabaseClient
+        .from('articles')
+        .update({
+          published: shouldPublish,
+          status: shouldPublish ? 'Published' : 'Unpublished',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id);
+
+      if (error) {
+        alert(`Unable to update status on Supabase: ${error.message}`);
+        return;
+      }
+    }
+
+    await fetchArticlesFromSupabase();
+    initKnowledgeSection();
+    renderDashboard();
+    showToast(`Article "${title}" is now ${shouldPublish ? 'Published' : 'Unpublished'}.`);
+    logActivity(`Changed status of "${title}" to ${shouldPublish ? 'Published' : 'Unpublished'}.`);
+  }
+
+  // Duplicate Article
+  async function duplicateArticle(id) {
+    const item = KNOWLEDGE_ITEMS.find(i => i.id === id);
+    if (!item) return;
+
+    const dupPayload = {
+      title: `${item.title} (Copy)`,
+      slug: `${item.slug}-copy-${Date.now()}`,
+      description: item.description,
+      author: item.author,
+      type: item.type,
+      category: item.category,
+      tags: item.tags,
+      content: item.contentMarkdown || item.content,
+      status: 'Draft',
+      published: false
+    };
+
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      const { error } = await supabaseClient.from('articles').insert([dupPayload]);
+      if (error) {
+        alert(`Duplicate failed: ${error.message}`);
+        return;
+      }
+    }
+
+    await fetchArticlesFromSupabase();
+    renderDashboard();
+    showToast(`Duplicated draft created.`);
+    logActivity(`Duplicated "${item.title}".`);
+  }
+
+  // Confirm Delete
+  function confirmDelete(id) {
+    const item = KNOWLEDGE_ITEMS.find(i => i.id === id);
+    if (!item) return;
+    deleteTargetArticleId = id;
+    if (deleteTargetTitle) deleteTargetTitle.textContent = `"${item.title}"`;
+    if (confirmDeleteModal) confirmDeleteModal.classList.add('active');
+  }
+
+  if (cancelDeleteBtn) {
+    cancelDeleteBtn.onclick = () => {
+      if (confirmDeleteModal) confirmDeleteModal.classList.remove('active');
+    };
+  }
+
+  if (confirmDeleteBtn) {
+    confirmDeleteBtn.onclick = async () => {
+      if (deleteTargetArticleId) {
+        if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+          const { error } = await supabaseClient
+            .from('articles')
+            .delete()
+            .eq('id', deleteTargetArticleId);
+
+          if (error) {
+            alert(`Unable to delete article from Supabase: ${error.message}`);
+            if (confirmDeleteModal) confirmDeleteModal.classList.remove('active');
+            return;
+          }
+        }
+
+        await fetchArticlesFromSupabase();
+        initKnowledgeSection();
+        renderDashboard();
+        showToast(`Deleted article permanently.`);
+        logActivity(`Deleted article from Supabase.`);
+      }
+      if (confirmDeleteModal) confirmDeleteModal.classList.remove('active');
+    };
+  }
+}
