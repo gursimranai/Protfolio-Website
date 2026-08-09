@@ -14,8 +14,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   initContactForm();
   initEmailAction();
   await fetchArticlesFromSupabase();
+  await fetchProjectsFromSupabase();
   initKnowledgeSection();
+  initProjectsSection();
   initAdminCMS();
+  handlePublicBlogRouting();
+  handlePublicProjectRouting();
 });
 
 /* ==========================================
@@ -2091,5 +2095,823 @@ function initAdminCMS() {
       }
       if (confirmDeleteModal) confirmDeleteModal.classList.remove('active');
     };
+  }
+
+  initProjectsAdminCMS();
+}
+
+/* ==========================================================================
+   SUPABASE BACKED PROJECT MANAGEMENT CMS & PUBLIC PORTFOLIO
+   ========================================================================== */
+
+let PROJECTS_ITEMS = []; // Default state is empty! Real projects loaded from Supabase.
+let activeEditingProjectId = null;
+let activeProjFilterCategory = 'All';
+let activeProjFilterStatus = 'All';
+let projMetricsState = [];
+
+// 1. Fetch Projects from Supabase
+async function fetchProjectsFromSupabase() {
+  if (typeof supabaseClient === 'undefined' || !supabaseClient) {
+    PROJECTS_ITEMS = [];
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('projects')
+      .select('*')
+      .order('display_order', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      PROJECTS_ITEMS = data.map(p => ({
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        shortDescription: p.short_description || '',
+        description: p.description || '',
+        category: p.category || 'AI / Machine Learning',
+        technologies: Array.isArray(p.technologies) ? p.technologies : [],
+        coverImage: p.cover_image || '',
+        githubUrl: p.github_url || '',
+        liveDemoUrl: p.live_demo_url || '',
+        documentationUrl: p.documentation_url || '',
+        paperUrl: p.paper_url || '',
+        demoVideoUrl: p.demo_video_url || '',
+        featured: Boolean(p.featured),
+        published: Boolean(p.published),
+        status: p.status || 'Draft',
+        displayOrder: p.display_order || 0,
+        metrics: Array.isArray(p.metrics) ? p.metrics : [],
+        content: p.content || '',
+        createdAt: p.created_at,
+        updatedAt: p.updated_at
+      }));
+    } else if (error) {
+      console.warn("Supabase projects query warning:", error.message);
+    }
+  } catch (err) {
+    console.error("fetchProjectsFromSupabase error:", err);
+  }
+}
+
+// 2. Handle Public Routing for Projects (#project/:slug)
+function handlePublicProjectRouting() {
+  const hash = window.location.hash;
+  if (hash.startsWith('#project/')) {
+    const slug = hash.replace('#project/', '');
+    if (slug) {
+      openProjectModal(slug);
+    }
+  }
+}
+
+window.addEventListener('hashchange', () => {
+  handlePublicProjectRouting();
+});
+
+// 3. Render Public Projects Section
+function initProjectsSection() {
+  const container = document.getElementById('projectGrid');
+  const emptyState = document.getElementById('projectEmptyState');
+  const categoriesNav = document.getElementById('projectCategories');
+  if (!container) return;
+
+  // Render Public Categories
+  if (categoriesNav) {
+    const categories = ['All Projects', 'LLMs & RAG', 'Computer Vision', 'MLOps & Infra', 'NLP', 'Data Science', 'Deep Learning', 'Other'];
+    categoriesNav.innerHTML = categories.map(cat => {
+      const catKey = cat === 'All Projects' ? 'All' : cat;
+      const isActive = activeProjFilterCategory === catKey;
+      return `<button class="category-btn ${isActive ? 'active' : ''}" data-projcat="${catKey}">${cat}</button>`;
+    }).join('');
+
+    categoriesNav.querySelectorAll('.category-btn').forEach(btn => {
+      btn.onclick = () => {
+        categoriesNav.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeProjFilterCategory = btn.getAttribute('data-projcat');
+        renderPublicProjectsGrid();
+      };
+    });
+  }
+
+  renderPublicProjectsGrid();
+}
+
+function renderPublicProjectsGrid() {
+  const container = document.getElementById('projectGrid');
+  const emptyState = document.getElementById('projectEmptyState');
+  if (!container) return;
+
+  let filtered = PROJECTS_ITEMS.filter(p => p.published && p.status === 'Published');
+
+  if (activeProjFilterCategory !== 'All') {
+    filtered = filtered.filter(p => {
+      if (activeProjFilterCategory === 'LLMs & RAG') return p.category.includes('LLM') || p.category.includes('RAG');
+      if (activeProjFilterCategory === 'Computer Vision') return p.category.includes('Vision');
+      if (activeProjFilterCategory === 'MLOps & Infra') return p.category.includes('MLOps') || p.category.includes('Infra');
+      return p.category === activeProjFilterCategory;
+    });
+  }
+
+  if (filtered.length === 0) {
+    container.style.display = 'none';
+    if (emptyState) emptyState.style.display = 'block';
+    return;
+  }
+
+  if (emptyState) emptyState.style.display = 'none';
+  container.style.display = 'grid';
+
+  container.innerHTML = filtered.map(p => {
+    const coverSrc = p.coverImage || 'assets/project_placeholder.jpg';
+    const metricsHtml = (p.metrics || []).slice(0, 2).map(m => `<span class="metric-tag">${m.label}: <strong>${m.value}</strong></span>`).join('');
+    const techTagsHtml = (p.technologies || []).slice(0, 4).map(t => `<span style="font-size:0.75rem; background:rgba(255,255,255,0.06); padding:0.2rem 0.5rem; border-radius:4px; color:var(--text-secondary);">${t}</span>`).join('');
+
+    return `
+      <div class="project-card" data-slug="${p.slug}">
+        <div class="project-img-wrapper" style="cursor:pointer;" onclick="openProjectModal('${p.slug}')">
+          <img src="${coverSrc}" alt="${p.title}" class="project-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600';">
+          <span class="project-badge">${p.category}</span>
+        </div>
+        <div class="project-content">
+          <h3 class="project-title" style="cursor:pointer;" onclick="openProjectModal('${p.slug}')">${p.title}</h3>
+          <p class="project-desc">${p.shortDescription || p.description.slice(0, 120)}</p>
+          ${techTagsHtml ? `<div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.8rem;">${techTagsHtml}</div>` : ''}
+          ${metricsHtml ? `<div class="project-metrics">${metricsHtml}</div>` : ''}
+          <div class="project-footer" style="display:flex; gap:0.8rem; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-top:1rem;">
+            <button type="button" onclick="openProjectModal('${p.slug}')" class="project-link" style="background:none; border:none; cursor:pointer; color:var(--accent-color); font-weight:600;">
+              View Details <i class="fas fa-arrow-right"></i>
+            </button>
+            ${p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" class="project-link" style="color:var(--text-secondary); font-size:0.85rem;"><i class="fab fa-github"></i> Code</a>` : ''}
+            ${p.liveDemoUrl ? `<a href="${p.liveDemoUrl}" target="_blank" class="project-link" style="color:var(--accent-color); font-size:0.85rem;"><i class="fas fa-external-link-alt"></i> Demo</a>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// 4. Open Public Project Detail Modal
+async function openProjectModal(projIdOrSlug) {
+  let project = PROJECTS_ITEMS.find(p => p.id === projIdOrSlug || p.slug === projIdOrSlug);
+
+  if (!project && typeof supabaseClient !== 'undefined' && supabaseClient) {
+    try {
+      const isUuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(projIdOrSlug);
+      const query = isUuid 
+        ? supabaseClient.from('projects').select('*').eq('id', projIdOrSlug).single()
+        : supabaseClient.from('projects').select('*').eq('slug', projIdOrSlug).single();
+      const { data } = await query;
+      if (data) {
+        project = {
+          id: data.id,
+          title: data.title,
+          slug: data.slug,
+          shortDescription: data.short_description,
+          description: data.description,
+          category: data.category,
+          technologies: data.technologies || [],
+          coverImage: data.cover_image,
+          githubUrl: data.github_url,
+          liveDemoUrl: data.live_demo_url,
+          documentationUrl: data.documentation_url,
+          paperUrl: data.paper_url,
+          demoVideoUrl: data.demo_video_url,
+          metrics: data.metrics || [],
+          content: data.content || ''
+        };
+      }
+    } catch (e) { console.warn(e); }
+  }
+
+  if (!project) return;
+
+  const modal = document.getElementById('projectReaderModal');
+  if (!modal) return;
+
+  window.location.hash = `#project/${project.slug}`;
+  modal.style.display = 'flex';
+  modal.setAttribute('aria-hidden', 'false');
+
+  const heroWrapper = document.getElementById('projCoverHeroWrapper');
+  const coverImg = document.getElementById('projDetailCoverImg');
+  if (project.coverImage) {
+    if (coverImg) coverImg.src = project.coverImage;
+    if (heroWrapper) heroWrapper.style.display = 'block';
+  } else {
+    if (heroWrapper) heroWrapper.style.display = 'none';
+  }
+
+  const badge = document.getElementById('projDetailBadge');
+  const title = document.getElementById('projDetailTitle');
+  const shortDesc = document.getElementById('projDetailShortDesc');
+  const techWrapper = document.getElementById('projDetailTech');
+  const linksRow = document.getElementById('projDetailLinksRow');
+  const metricsSection = document.getElementById('projDetailMetricsSection');
+  const metricsGrid = document.getElementById('projDetailMetricsGrid');
+  const body = document.getElementById('projDetailBody');
+
+  if (badge) badge.textContent = project.category || 'AI / ML';
+  if (title) title.textContent = project.title;
+  if (shortDesc) shortDesc.textContent = project.shortDescription || '';
+
+  if (techWrapper) {
+    techWrapper.innerHTML = (project.technologies || []).map(t => `<span class="tag-pill">${t}</span>`).join('');
+  }
+
+  // Render Action Links ONLY IF THEY EXIST
+  if (linksRow) {
+    let linksHtml = '';
+    if (project.githubUrl) linksHtml += `<a href="${project.githubUrl}" target="_blank" class="btn btn-primary" style="font-size:0.85rem;"><i class="fab fa-github"></i> GitHub Repo &rarr;</a>`;
+    if (project.liveDemoUrl) linksHtml += `<a href="${project.liveDemoUrl}" target="_blank" class="btn btn-outline" style="font-size:0.85rem; border-color:var(--accent-color); color:var(--accent-color);"><i class="fas fa-external-link-alt"></i> Live Demo &rarr;</a>`;
+    if (project.documentationUrl) linksHtml += `<a href="${project.documentationUrl}" target="_blank" class="btn btn-outline" style="font-size:0.85rem;"><i class="fas fa-book"></i> Documentation &rarr;</a>`;
+    if (project.paperUrl) linksHtml += `<a href="${project.paperUrl}" target="_blank" class="btn btn-outline" style="font-size:0.85rem;"><i class="fas fa-file-pdf"></i> Research Paper &rarr;</a>`;
+    if (project.demoVideoUrl) linksHtml += `<a href="${project.demoVideoUrl}" target="_blank" class="btn btn-outline" style="font-size:0.85rem;"><i class="fab fa-youtube"></i> Demo Video &rarr;</a>`;
+    linksRow.innerHTML = linksHtml;
+  }
+
+  // Render Metrics Grid ONLY IF THEY EXIST
+  if (metricsSection && metricsGrid) {
+    if (project.metrics && project.metrics.length > 0) {
+      metricsSection.style.display = 'block';
+      metricsGrid.innerHTML = project.metrics.map(m => `
+        <div style="background:var(--bg-main); padding:0.6rem 0.8rem; border-radius:6px; border:1px solid var(--border-color); text-align:center;">
+          <span style="font-size:0.75rem; color:var(--text-secondary); display:block;">${m.label}</span>
+          <strong style="font-size:1.1rem; color:var(--text-primary);">${m.value}</strong>
+        </div>
+      `).join('');
+    } else {
+      metricsSection.style.display = 'none';
+    }
+  }
+
+  // Render Content Markdown
+  if (body) {
+    const rawContent = project.content || project.description || '*No detailed overview available yet.*';
+    if (typeof marked !== 'undefined') {
+      body.innerHTML = marked.parse(rawContent);
+    } else {
+      body.innerHTML = `<p>${rawContent}</p>`;
+    }
+
+    if (typeof renderMathInElement !== 'undefined') {
+      try {
+        renderMathInElement(body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ]
+        });
+      } catch (e) { console.warn(e); }
+    }
+  }
+
+  const closeBtn = document.getElementById('closeProjectModalBtn');
+  if (closeBtn) {
+    closeBtn.onclick = () => {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      window.location.hash = '#portfolio';
+    };
+  }
+
+  const shareBtn = document.getElementById('shareProjectLinkBtn');
+  if (shareBtn) {
+    shareBtn.onclick = () => {
+      const url = `${window.location.origin}${window.location.pathname}#project/${project.slug}`;
+      navigator.clipboard.writeText(url);
+      const span = document.getElementById('copyProjTextSpan');
+      if (span) span.textContent = 'Copied!';
+      setTimeout(() => { if (span) span.textContent = 'Copy Link'; }, 2000);
+    };
+  }
+}
+
+// 5. Admin Projects Dashboard Sub-Nav & Controls
+function initProjectsAdminCMS() {
+  const secNavArticlesBtn = document.getElementById('secNavArticlesBtn');
+  const secNavProjectsBtn = document.getElementById('secNavProjectsBtn');
+  const articlesSection = document.getElementById('adminArticlesSection');
+  const projectsSection = document.getElementById('adminProjectsSection');
+
+  if (secNavArticlesBtn && secNavProjectsBtn) {
+    secNavArticlesBtn.onclick = () => {
+      secNavArticlesBtn.classList.add('active');
+      secNavArticlesBtn.style.borderBottom = '2px solid var(--accent-color)';
+      secNavArticlesBtn.style.color = 'var(--accent-color)';
+      secNavProjectsBtn.classList.remove('active');
+      secNavProjectsBtn.style.borderBottom = 'none';
+      secNavProjectsBtn.style.color = 'var(--text-secondary)';
+      if (articlesSection) articlesSection.style.display = 'block';
+      if (projectsSection) projectsSection.style.display = 'none';
+    };
+
+    secNavProjectsBtn.onclick = () => {
+      secNavProjectsBtn.classList.add('active');
+      secNavProjectsBtn.style.borderBottom = '2px solid var(--accent-color)';
+      secNavProjectsBtn.style.color = 'var(--accent-color)';
+      secNavArticlesBtn.classList.remove('active');
+      secNavArticlesBtn.style.borderBottom = 'none';
+      secNavArticlesBtn.style.color = 'var(--text-secondary)';
+      if (articlesSection) articlesSection.style.display = 'none';
+      if (projectsSection) projectsSection.style.display = 'block';
+      renderProjectsAdminDashboard();
+    };
+  }
+
+  const addNewProjectBtn = document.getElementById('addNewProjectBtn');
+  const emptyAddBtn = document.getElementById('emptyStateAddProjectBtn');
+  if (addNewProjectBtn) addNewProjectBtn.onclick = () => openProjectEditor();
+  if (emptyAddBtn) emptyAddBtn.onclick = () => openProjectEditor();
+
+  const searchInput = document.getElementById('adminProjSearchInput');
+  if (searchInput) {
+    searchInput.oninput = () => renderProjectsAdminDashboard();
+  }
+
+  const filterTabs = document.querySelectorAll('#adminProjFilterTabs .admin-tab-btn');
+  filterTabs.forEach(btn => {
+    btn.onclick = () => {
+      filterTabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeProjFilterStatus = btn.getAttribute('data-projfilter');
+      renderProjectsAdminDashboard();
+    };
+  });
+}
+
+function renderProjectsAdminDashboard() {
+  const tbody = document.getElementById('adminProjTableBody');
+  const emptyState = document.getElementById('adminProjTableEmptyState');
+  if (!tbody) return;
+
+  const statFeatured = document.getElementById('statFeaturedCount');
+  if (statFeatured) {
+    statFeatured.textContent = PROJECTS_ITEMS.filter(p => p.featured).length;
+  }
+
+  let items = [...PROJECTS_ITEMS];
+
+  if (activeProjFilterStatus === 'Published') items = items.filter(p => p.published);
+  else if (activeProjFilterStatus === 'Draft') items = items.filter(p => !p.published || p.status === 'Draft');
+  else if (activeProjFilterStatus === 'Featured') items = items.filter(p => p.featured);
+
+  const searchVal = (document.getElementById('adminProjSearchInput')?.value || '').toLowerCase().trim();
+  if (searchVal) {
+    items = items.filter(p => 
+      p.title.toLowerCase().includes(searchVal) ||
+      p.category.toLowerCase().includes(searchVal) ||
+      (p.technologies || []).some(t => t.toLowerCase().includes(searchVal)) ||
+      p.shortDescription.toLowerCase().includes(searchVal)
+    );
+  }
+
+  if (items.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyState) emptyState.style.display = 'block';
+    return;
+  }
+
+  if (emptyState) emptyState.style.display = 'none';
+
+  tbody.innerHTML = items.map((p, idx) => {
+    const coverThumb = p.coverImage 
+      ? `<img src="${p.coverImage}" style="width:40px; height:30px; object-fit:cover; border-radius:4px;">`
+      : `<div style="width:40px; height:30px; background:var(--bg-main); border-radius:4px; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:0.7rem;"><i class="fas fa-image"></i></div>`;
+
+    const statusBadge = p.published
+      ? `<span class="status-pill status-pub"><i class="fas fa-check"></i> Published</span>`
+      : `<span class="status-pill status-draft"><i class="fas fa-pencil-alt"></i> Draft</span>`;
+
+    const featuredStar = p.featured 
+      ? `<i class="fas fa-star" style="color:gold;"></i>` 
+      : `<i class="far fa-star" style="color:var(--text-secondary);"></i>`;
+
+    return `
+      <tr>
+        <td>${coverThumb}</td>
+        <td><strong>${p.title}</strong><br><span style="font-size:0.75rem; color:var(--text-secondary);">/${p.slug}</span></td>
+        <td><span class="type-tag">${p.category}</span></td>
+        <td>${statusBadge}</td>
+        <td style="text-align:center; cursor:pointer;" onclick="toggleProjectFeatured('${p.id}')">${featuredStar}</td>
+        <td style="font-size:0.8rem; color:var(--text-secondary);">${p.updatedAt ? new Date(p.updatedAt).toLocaleDateString() : 'Just now'}</td>
+        <td>
+          <div style="display:flex; gap:0.2rem;">
+            <button onclick="reorderProject('${p.id}', 'up')" class="btn-icon" title="Move Up"><i class="fas fa-arrow-up"></i></button>
+            <button onclick="reorderProject('${p.id}', 'down')" class="btn-icon" title="Move Down"><i class="fas fa-arrow-down"></i></button>
+          </div>
+        </td>
+        <td>
+          <div class="row-actions">
+            <button onclick="openProjectEditor('${p.id}')" class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+            <button onclick="openProjectModal('${p.id}')" class="btn-icon" title="Preview"><i class="fas fa-eye"></i></button>
+            <button onclick="duplicateProject('${p.id}')" class="btn-icon" title="Duplicate"><i class="fas fa-copy"></i></button>
+            <button onclick="togglePublishProject('${p.id}', ${!p.published})" class="btn-icon" title="${p.published ? 'Unpublish' : 'Publish'}"><i class="fas fa-${p.published ? 'eye-slash' : 'paper-plane'}"></i></button>
+            <button onclick="deleteProject('${p.id}')" class="btn-icon delete-btn" title="Delete"><i class="fas fa-trash"></i></button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// 6. Open Project Editor
+function openProjectEditor(projectId = null) {
+  activeEditingProjectId = projectId;
+  const editorView = document.getElementById('adminProjectEditorView');
+  const headerTitle = document.getElementById('projectEditorHeaderTitle');
+
+  if (editorView) {
+    document.querySelectorAll('.admin-view').forEach(v => v.style.display = 'none');
+    editorView.style.display = 'block';
+    window.location.hash = projectId ? `#admin/projects/edit/${projectId}` : '#admin/projects/new';
+  }
+
+  const projTitle = document.getElementById('projTitle');
+  const projSlug = document.getElementById('projSlug');
+  const projCategory = document.getElementById('projCategory');
+  const projShortDesc = document.getElementById('projShortDesc');
+  const projTech = document.getElementById('projTech');
+  const projCoverUrl = document.getElementById('projCoverUrl');
+  const projCoverPreviewWrapper = document.getElementById('projCoverPreviewWrapper');
+  const projCoverPreviewImg = document.getElementById('projCoverPreviewImg');
+  const projGithub = document.getElementById('projGithub');
+  const projLiveDemo = document.getElementById('projLiveDemo');
+  const projDocs = document.getElementById('projDocs');
+  const projPaper = document.getElementById('projPaper');
+  const projDemoVideo = document.getElementById('projDemoVideo');
+  const projFeatured = document.getElementById('projFeatured');
+  const projContentTextarea = document.getElementById('projContentTextarea');
+
+  if (projectId) {
+    const proj = PROJECTS_ITEMS.find(p => p.id === projectId);
+    if (proj) {
+      if (headerTitle) headerTitle.textContent = `Edit Project: ${proj.title}`;
+      if (projTitle) projTitle.value = proj.title;
+      if (projSlug) projSlug.value = proj.slug;
+      if (projCategory) projCategory.value = proj.category || 'AI / Machine Learning';
+      if (projShortDesc) projShortDesc.value = proj.shortDescription || '';
+      if (projTech) projTech.value = (proj.technologies || []).join(', ');
+      if (projCoverUrl) projCoverUrl.value = proj.coverImage || '';
+      if (projCoverUrl && proj.coverImage && projCoverPreviewWrapper && projCoverPreviewImg) {
+        projCoverPreviewImg.src = proj.coverImage;
+        projCoverPreviewWrapper.style.display = 'block';
+      } else if (projCoverPreviewWrapper) {
+        projCoverPreviewWrapper.style.display = 'none';
+      }
+      if (projGithub) projGithub.value = proj.githubUrl || '';
+      if (projLiveDemo) projLiveDemo.value = proj.liveDemoUrl || '';
+      if (projDocs) projDocs.value = proj.documentationUrl || '';
+      if (projPaper) projPaper.value = proj.paperUrl || '';
+      if (projDemoVideo) projDemoVideo.value = proj.demoVideoUrl || '';
+      if (projFeatured) projFeatured.checked = Boolean(proj.featured);
+      if (projContentTextarea) projContentTextarea.value = proj.content || '';
+      projMetricsState = proj.metrics ? [...proj.metrics] : [];
+    }
+  } else {
+    if (headerTitle) headerTitle.textContent = `Create New ML Project`;
+    if (projTitle) projTitle.value = '';
+    if (projSlug) projSlug.value = '';
+    if (projCategory) projCategory.value = 'AI / Machine Learning';
+    if (projShortDesc) projShortDesc.value = '';
+    if (projTech) projTech.value = '';
+    if (projCoverUrl) projCoverUrl.value = '';
+    if (projCoverPreviewWrapper) projCoverPreviewWrapper.style.display = 'none';
+    if (projGithub) projGithub.value = '';
+    if (projLiveDemo) projLiveDemo.value = '';
+    if (projDocs) projDocs.value = '';
+    if (projPaper) projPaper.value = '';
+    if (projDemoVideo) projDemoVideo.value = '';
+    if (projFeatured) projFeatured.checked = false;
+    if (projContentTextarea) projContentTextarea.value = '';
+    projMetricsState = [];
+  }
+
+  renderMetricsEditorList();
+  bindProjectEditorEvents();
+}
+
+function bindProjectEditorEvents() {
+  const backBtn = document.getElementById('backToProjectsDashboardBtn');
+  if (backBtn) {
+    backBtn.onclick = () => {
+      window.location.hash = '#admin/dashboard';
+      const editorView = document.getElementById('adminProjectEditorView');
+      const dashboardView = document.getElementById('adminDashboardView');
+      if (editorView) editorView.style.display = 'none';
+      if (dashboardView) dashboardView.style.display = 'block';
+      renderProjectsAdminDashboard();
+    };
+  }
+
+  const saveDraftBtn = document.getElementById('saveProjDraftBtn');
+  const publishBtn = document.getElementById('publishProjBtn');
+  if (saveDraftBtn) saveDraftBtn.onclick = () => saveProject('Draft');
+  if (publishBtn) publishBtn.onclick = () => {
+    if (confirm("Publish this project live to the public portfolio?")) {
+      saveProject('Published');
+    }
+  };
+
+  const uploadBtn = document.getElementById('uploadProjCoverBtn');
+  const fileInput = document.getElementById('projCoverFileInput');
+  const removeBtn = document.getElementById('removeProjCoverBtn');
+  const coverUrlInput = document.getElementById('projCoverUrl');
+
+  if (uploadBtn && fileInput) {
+    uploadBtn.onclick = () => fileInput.click();
+    fileInput.onchange = async () => {
+      if (!fileInput.files || !fileInput.files[0]) return;
+      const file = fileInput.files[0];
+      
+      if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+        showToast("Uploading project cover image to Supabase Storage...");
+        const filePath = `cover-${Date.now()}-${file.name.replace(/[^\w.-]/g, '_')}`;
+        const { data, error } = await supabaseClient.storage.from('project-images').upload(filePath, file);
+        if (error) {
+          alert(`Image upload failed: ${error.message}`);
+          return;
+        }
+        if (data) {
+          const { data: pubUrlData } = supabaseClient.storage.from('project-images').getPublicUrl(filePath);
+          if (pubUrlData && pubUrlData.publicUrl) {
+            coverUrlInput.value = pubUrlData.publicUrl;
+            const previewImg = document.getElementById('projCoverPreviewImg');
+            const previewWrapper = document.getElementById('projCoverPreviewWrapper');
+            if (previewImg) previewImg.src = pubUrlData.publicUrl;
+            if (previewWrapper) previewWrapper.style.display = 'block';
+            showToast("Project cover image uploaded cleanly!");
+          }
+        }
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          coverUrlInput.value = e.target.result;
+          const previewImg = document.getElementById('projCoverPreviewImg');
+          const previewWrapper = document.getElementById('projCoverPreviewWrapper');
+          if (previewImg) previewImg.src = e.target.result;
+          if (previewWrapper) previewWrapper.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+  }
+
+  if (removeBtn && coverUrlInput) {
+    removeBtn.onclick = () => {
+      coverUrlInput.value = '';
+      const previewWrapper = document.getElementById('projCoverPreviewWrapper');
+      if (previewWrapper) previewWrapper.style.display = 'none';
+    };
+  }
+
+  const addMetricBtn = document.getElementById('addMetricBtn');
+  if (addMetricBtn) {
+    addMetricBtn.onclick = () => {
+      const label = prompt("Enter Metric Label (e.g. Accuracy, Latency, FPS):");
+      if (!label) return;
+      const value = prompt(`Enter Value for ${label} (e.g. 94.8%, 18 ms):`);
+      if (!value) return;
+      projMetricsState.push({ label: label.trim(), value: value.trim() });
+      renderMetricsEditorList();
+    };
+  }
+}
+
+function renderMetricsEditorList() {
+  const container = document.getElementById('projMetricsEditorList');
+  if (!container) return;
+
+  if (projMetricsState.length === 0) {
+    container.innerHTML = `<span style="font-size:0.8rem; color:var(--text-secondary); text-align:center; display:block;">No metrics added yet.</span>`;
+    return;
+  }
+
+  container.innerHTML = projMetricsState.map((m, idx) => `
+    <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-main); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); font-size:0.85rem;">
+      <span><strong>${m.label}:</strong> ${m.value}</span>
+      <button type="button" onclick="deleteMetric(${idx})" style="background:none; border:none; color:#e74c3c; cursor:pointer;"><i class="fas fa-times"></i></button>
+    </div>
+  `).join('');
+}
+
+function deleteMetric(idx) {
+  projMetricsState.splice(idx, 1);
+  renderMetricsEditorList();
+}
+
+// 7. Save Project (CREATE vs EDIT Mode with Supabase)
+async function saveProject(status = 'Draft', isAutosave = false) {
+  const titleInput = document.getElementById('projTitle');
+  const slugInput = document.getElementById('projSlug');
+  const catInput = document.getElementById('projCategory');
+  const shortDescInput = document.getElementById('projShortDesc');
+  const techInput = document.getElementById('projTech');
+  const coverUrlInput = document.getElementById('projCoverUrl');
+  const githubInput = document.getElementById('projGithub');
+  const liveDemoInput = document.getElementById('projLiveDemo');
+  const docsInput = document.getElementById('projDocs');
+  const paperInput = document.getElementById('projPaper');
+  const demoVideoInput = document.getElementById('projDemoVideo');
+  const featuredInput = document.getElementById('projFeatured');
+  const contentInput = document.getElementById('projContentTextarea');
+
+  const titleVal = titleInput ? titleInput.value.trim() : '';
+  if (!titleVal && !isAutosave) {
+    alert("Please enter a project title.");
+    return;
+  }
+
+  const isEditMode = Boolean(activeEditingProjectId);
+  let baseSlug = slugInput && slugInput.value.trim() 
+    ? slugInput.value.trim() 
+    : (titleVal.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '') || 'new-project');
+  let finalSlug = baseSlug;
+
+  if (isEditMode) {
+    const otherItemWithSlug = PROJECTS_ITEMS.find(p => p.slug === finalSlug && p.id !== activeEditingProjectId);
+    if (otherItemWithSlug) {
+      alert("This slug is already used by another project.");
+      return;
+    }
+  } else {
+    let counter = 2;
+    while (PROJECTS_ITEMS.some(p => p.slug === finalSlug)) {
+      finalSlug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+  }
+
+  const techArr = techInput ? techInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+  const payload = {
+    title: titleVal || 'Untitled Project',
+    slug: finalSlug,
+    short_description: shortDescInput ? shortDescInput.value.trim() : '',
+    description: shortDescInput ? shortDescInput.value.trim() : '',
+    category: catInput ? catInput.value : 'AI / Machine Learning',
+    technologies: techArr,
+    cover_image: coverUrlInput ? coverUrlInput.value.trim() : '',
+    github_url: githubInput ? githubInput.value.trim() : '',
+    live_demo_url: liveDemoInput ? liveDemoInput.value.trim() : '',
+    documentation_url: docsInput ? docsInput.value.trim() : '',
+    paper_url: paperInput ? paperInput.value.trim() : '',
+    demo_video_url: demoVideoInput ? demoVideoInput.value.trim() : '',
+    featured: featuredInput ? featuredInput.checked : false,
+    published: (status === 'Published'),
+    status: status,
+    metrics: projMetricsState,
+    content: contentInput ? contentInput.value : '',
+    updated_at: new Date().toISOString()
+  };
+
+  if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+    let res;
+    if (isEditMode) {
+      res = await supabaseClient.from('projects').update(payload).eq('id', activeEditingProjectId).select().single();
+    } else {
+      res = await supabaseClient.from('projects').insert([payload]).select().single();
+    }
+
+    if (res.error) {
+      console.error("Supabase Project Save Error:", res.error);
+      if (!isAutosave) {
+        alert(`Unable to save project to Supabase: ${res.error.message}`);
+      }
+      return;
+    }
+
+    if (res.data && res.data.id) {
+      activeEditingProjectId = res.data.id;
+    }
+  }
+
+  await fetchProjectsFromSupabase();
+  initProjectsSection();
+  renderProjectsAdminDashboard();
+
+  if (!isAutosave) {
+    showToast(`Project saved cleanly as ${status}!`);
+    window.location.hash = '#admin/dashboard';
+    const editorView = document.getElementById('adminProjectEditorView');
+    const dashboardView = document.getElementById('adminDashboardView');
+    if (editorView) editorView.style.display = 'none';
+    if (dashboardView) dashboardView.style.display = 'block';
+  }
+}
+
+// 8. Toggle Publish / Featured / Reorder / Duplicate / Delete
+async function togglePublishProject(id, shouldPublish) {
+  if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+    const { error } = await supabaseClient.from('projects').update({
+      published: shouldPublish,
+      status: shouldPublish ? 'Published' : 'Draft',
+      updated_at: new Date().toISOString()
+    }).eq('id', id);
+
+    if (error) {
+      alert(`Publish toggle failed: ${error.message}`);
+      return;
+    }
+  }
+
+  await fetchProjectsFromSupabase();
+  initProjectsSection();
+  renderProjectsAdminDashboard();
+  showToast(`Project status updated.`);
+}
+
+async function toggleProjectFeatured(id) {
+  const proj = PROJECTS_ITEMS.find(p => p.id === id);
+  if (!proj) return;
+
+  if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+    await supabaseClient.from('projects').update({ featured: !proj.featured }).eq('id', id);
+  }
+
+  await fetchProjectsFromSupabase();
+  initProjectsSection();
+  renderProjectsAdminDashboard();
+}
+
+async function duplicateProject(id) {
+  const proj = PROJECTS_ITEMS.find(p => p.id === id);
+  if (!proj) return;
+
+  const dupPayload = {
+    title: `${proj.title} (Copy)`,
+    slug: `${proj.slug}-copy-${Date.now()}`,
+    short_description: proj.shortDescription,
+    description: proj.description,
+    category: proj.category,
+    technologies: proj.technologies,
+    cover_image: proj.coverImage,
+    github_url: proj.githubUrl,
+    live_demo_url: proj.liveDemoUrl,
+    documentation_url: proj.documentationUrl,
+    paper_url: proj.paperUrl,
+    demo_video_url: proj.demoVideoUrl,
+    featured: false,
+    published: false,
+    status: 'Draft',
+    metrics: proj.metrics,
+    content: proj.content
+  };
+
+  if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+    const { error } = await supabaseClient.from('projects').insert([dupPayload]);
+    if (error) {
+      alert(`Duplicate project failed: ${error.message}`);
+      return;
+    }
+  }
+
+  await fetchProjectsFromSupabase();
+  renderProjectsAdminDashboard();
+  showToast(`Duplicated project draft created.`);
+}
+
+async function reorderProject(id, direction) {
+  const idx = PROJECTS_ITEMS.findIndex(p => p.id === id);
+  if (idx < 0) return;
+  const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+  if (targetIdx < 0 || targetIdx >= PROJECTS_ITEMS.length) return;
+
+  const currentProj = PROJECTS_ITEMS[idx];
+  const targetProj = PROJECTS_ITEMS[targetIdx];
+
+  const currentOrder = currentProj.displayOrder || idx;
+  const targetOrder = targetProj.displayOrder || targetIdx;
+
+  if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+    await supabaseClient.from('projects').update({ display_order: targetOrder }).eq('id', currentProj.id);
+    await supabaseClient.from('projects').update({ display_order: currentOrder }).eq('id', targetProj.id);
+  }
+
+  await fetchProjectsFromSupabase();
+  initProjectsSection();
+  renderProjectsAdminDashboard();
+}
+
+async function deleteProject(id) {
+  const proj = PROJECTS_ITEMS.find(p => p.id === id);
+  if (!proj) return;
+
+  if (confirm(`Are you sure you want to permanently delete the project "${proj.title}"?`)) {
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      const { error } = await supabaseClient.from('projects').delete().eq('id', id);
+      if (error) {
+        alert(`Delete failed: ${error.message}`);
+        return;
+      }
+    }
+
+    await fetchProjectsFromSupabase();
+    initProjectsSection();
+    renderProjectsAdminDashboard();
+    showToast(`Project permanently deleted.`);
   }
 }
