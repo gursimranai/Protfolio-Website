@@ -87,6 +87,43 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --------------------------------------------------------
+  // Email Clipboard Copy
+  // --------------------------------------------------------
+  const copyEmailBtn = document.getElementById('copy-email-btn');
+  if (copyEmailBtn) {
+    copyEmailBtn.addEventListener('click', async () => {
+      const email = copyEmailBtn.getAttribute('data-email');
+      const originalText = 'EMAIL';
+      
+      try {
+        await navigator.clipboard.writeText(email);
+        copyEmailBtn.innerText = '✓ COPIED';
+        copyEmailBtn.style.color = 'var(--accent-primary)';
+      } catch (err) {
+        console.error('Failed to copy email: ', err);
+        // Fallback
+        const textArea = document.createElement("textarea");
+        textArea.value = email;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          copyEmailBtn.innerText = '✓ COPIED';
+          copyEmailBtn.style.color = 'var(--accent-primary)';
+        } catch (fallbackErr) {
+          copyEmailBtn.innerText = 'FAILED';
+        }
+        document.body.removeChild(textArea);
+      }
+      
+      setTimeout(() => {
+        copyEmailBtn.innerText = originalText;
+        copyEmailBtn.style.color = '';
+      }, 2000);
+    });
+  }
+
+  // --------------------------------------------------------
   // Ambient Motion System - Living Neural Grid
   // --------------------------------------------------------
   const canvas = document.getElementById('neural-canvas');

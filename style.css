@@ -314,22 +314,32 @@ section {
   flex-wrap: wrap;
 }
 
-.hero-meta span:first-child {
+.meta-label {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--text-muted);
-  letter-spacing: 0.05em;
-  margin-right: 0.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-right: var(--space-sm);
 }
 
-.chip-subtle {
-  background: var(--surface-secondary);
-  border: 1px solid var(--border-subtle);
-  padding: 0.2rem 0.6rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.75rem;
+.meta-item {
   font-family: var(--font-mono);
+  font-size: 0.875rem;
   color: var(--text-secondary);
+  transition: color var(--motion-standard) var(--ease-standard), text-shadow var(--motion-standard) var(--ease-standard);
+  cursor: default;
+}
+
+.meta-item:hover {
+  color: var(--text-primary);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.meta-dot {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  opacity: 0.5;
 }
 
 .hero-desc {
@@ -346,14 +356,20 @@ section {
   margin-top: var(--space-md);
 }
 
-.social-links a {
+.social-links a, .social-links button {
   font-family: var(--font-mono);
   font-size: 0.875rem;
   color: var(--text-muted);
   text-transform: uppercase;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color var(--motion-standard) var(--ease-standard);
 }
 
-.social-links a:hover, .social-links a:focus-visible {
+.social-links a:hover, .social-links a:focus-visible,
+.social-links button:hover, .social-links button:focus-visible {
   color: var(--accent-primary);
   outline: none;
 }
