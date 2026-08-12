@@ -76,9 +76,30 @@
   <section id="about" class="section-alt">
     <div class="container about-content">
       <div class="about-left reveal stagger-1">
-         <div class="about-image-wrapper">
-            <div class="about-image">
-              <span class="image-placeholder">Secondary Visual</span>
+         <div class="pipeline-visual">
+            <div class="pipeline-node">
+               <span class="pipeline-number">01</span>
+               <span class="pipeline-label">FOUNDATIONS</span>
+            </div>
+            <div class="pipeline-line"></div>
+            <div class="pipeline-node active">
+               <span class="pipeline-number">02</span>
+               <span class="pipeline-label">MACHINE LEARNING</span>
+            </div>
+            <div class="pipeline-line"></div>
+            <div class="pipeline-node">
+               <span class="pipeline-number">03</span>
+               <span class="pipeline-label">DEEP LEARNING</span>
+            </div>
+            <div class="pipeline-line"></div>
+            <div class="pipeline-node">
+               <span class="pipeline-number">04</span>
+               <span class="pipeline-label">AI ENGINEERING</span>
+            </div>
+            <div class="pipeline-line"></div>
+            <div class="pipeline-node">
+               <span class="pipeline-number">05</span>
+               <span class="pipeline-label">PRODUCTION</span>
             </div>
          </div>
       </div>
@@ -86,40 +107,68 @@
       <div class="about-right">
         <span class="section-meta reveal">01 — ABOUT ME</span>
         <h2 class="reveal stagger-1">AI/ML Engineer in Progress</h2>
+        
+        <p class="reveal stagger-2 text-secondary" style="margin-bottom: var(--space-md);">
+          I'm a B.Tech CSE student specializing in Artificial Intelligence & Machine Learning, building a strong foundation in Python, data, machine learning, and AI engineering. My journey combines structured learning with hands-on projects, technical experimentation, and continuous problem solving.
+        </p>
         <p class="reveal stagger-2 text-secondary">
-          As a B.Tech AI/ML student, I combine a rigorous engineering mindset with deep interests in machine learning and scalable architectures. I am driven by continuous learning and ambitious problem-solving, building projects that bridge raw data and intelligent enterprise software.
+          Currently, I'm strengthening my foundations in machine learning, statistics, data analysis, and deep learning while building practical projects that turn concepts into working systems.
         </p>
         
-        <div class="tech-snapshot reveal stagger-3">
-          <div class="tech-row">
-            <span class="tech-cat">PROGRAMMING</span>
-            <span class="tech-items">Python · SQL · C++</span>
-          </div>
-          <div class="tech-row">
-            <span class="tech-cat">DATA</span>
-            <span class="tech-items">NumPy · Pandas · Matplotlib</span>
-          </div>
-          <div class="tech-row">
-            <span class="tech-cat">MACHINE LEARNING</span>
-            <span class="tech-items">Scikit-learn · Statistics · Feature Engineering</span>
-          </div>
-          <div class="tech-row">
-            <span class="tech-cat">DEEP LEARNING</span>
-            <span class="tech-items">PyTorch · TensorFlow</span>
-          </div>
-          <div class="tech-row">
-            <span class="tech-cat">AI</span>
-            <span class="tech-items">Computer Vision · NLP · LLMs</span>
-          </div>
-          <div class="tech-row">
-            <span class="tech-cat">ENGINEERING</span>
-            <span class="tech-items">Git · Docker · FastAPI · Linux</span>
+        <!-- Internship Block -->
+        <div class="internship-block reveal stagger-3" id="internship-status">
+          <div class="internship-badge" id="internship-badge">INCOMING</div>
+          <div class="internship-details">
+            <h3 class="internship-role">ML INTERN — UNIFIED MENTOR</h3>
+            <p class="internship-date" id="internship-date">STARTING 15 AUG 2026</p>
+            <p class="internship-desc">3-MONTH VIRTUAL INTERNSHIP</p>
           </div>
         </div>
         
-        <div class="btn-group reveal stagger-4" style="margin-top: var(--space-md);">
-          <a href="#" class="btn btn-primary">DOWNLOAD RESUME</a>
-          <a href="#" class="btn btn-secondary">VIEW GITHUB</a>
+        <!-- Current Focus -->
+        <div class="focus-block reveal stagger-4">
+          <h3 class="focus-title">CURRENT FOCUS</h3>
+          <p class="focus-items">
+            Python & Programming · Data Analysis & Visualization · Statistics & Probability · Machine Learning · Feature Engineering · Deep Learning Foundations · AI Applications · SQL · Software Engineering for ML
+          </p>
+        </div>
+
+        <div class="tech-snapshot reveal stagger-5">
+          <h3 class="focus-title" style="margin-bottom: 1rem;">TECHNICAL FOUNDATION</h3>
+          <div class="tech-row">
+            <span class="tech-cat">PROGRAMMING</span>
+            <span class="tech-items">Python · C++ · SQL</span>
+          </div>
+          <div class="tech-row">
+            <span class="tech-cat">DATA</span>
+            <span class="tech-items">NumPy · Pandas · Matplotlib · Data Cleaning · EDA</span>
+          </div>
+          <div class="tech-row">
+            <span class="tech-cat">MACHINE LEARNING</span>
+            <span class="tech-items">Scikit-learn · Supervised Learning · Unsupervised Learning · Feature Engineering</span>
+          </div>
+          <div class="tech-row">
+            <span class="tech-cat">MATHEMATICS</span>
+            <span class="tech-items">Statistics · Probability · Linear Algebra</span>
+          </div>
+          <div class="tech-row">
+            <span class="tech-cat">DEEP LEARNING</span>
+            <span class="tech-items">PyTorch · TensorFlow · Neural Networks</span>
+          </div>
+          <div class="tech-row">
+            <span class="tech-cat">AI</span>
+            <span class="tech-items">Computer Vision · NLP · LLM Fundamentals · Generative AI</span>
+          </div>
+          <div class="tech-row">
+            <span class="tech-cat">ENGINEERING</span>
+            <span class="tech-items">Git · GitHub · Linux · FastAPI · Docker</span>
+          </div>
+        </div>
+        
+        <div class="btn-group reveal stagger-6" style="margin-top: var(--space-md);">
+          <!-- TODO: Place your resume PDF at 'assets/documents/resume.pdf' -->
+          <a href="assets/documents/resume.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-primary" aria-label="Download my resume">DOWNLOAD RESUME</a>
+          <a href="https://github.com/gursimranai" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" aria-label="View my GitHub profile">VIEW GITHUB</a>
         </div>
       </div>
     </div>

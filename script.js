@@ -1,5 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Smooth scrolling for navigation links
+  // --------------------------------------------------------
+  // Internship Status Logic
+  // --------------------------------------------------------
+  const internshipBadge = document.getElementById('internship-badge');
+  const internshipDate = document.getElementById('internship-date');
+  
+  if (internshipBadge && internshipDate) {
+    const startDate = new Date('2026-08-15T00:00:00');
+    const endDate = new Date('2026-11-15T00:00:00');
+    const now = new Date();
+    
+    if (now < startDate) {
+      internshipBadge.textContent = 'INCOMING';
+      internshipDate.textContent = 'STARTING 15 AUG 2026';
+    } else if (now >= startDate && now <= endDate) {
+      internshipBadge.textContent = 'CURRENT';
+      internshipBadge.style.color = 'var(--bg)';
+      internshipBadge.style.background = 'var(--accent-primary)';
+      internshipDate.textContent = 'AUG 2026 — NOV 2026';
+    } else {
+      internshipBadge.textContent = 'COMPLETED';
+      internshipBadge.style.color = 'var(--text-muted)';
+      internshipBadge.style.border = '1px solid var(--border-subtle)';
+      internshipDate.textContent = 'AUG 2026 — NOV 2026';
+    }
+  }
   const navLinks = document.querySelectorAll('.nav-links a');
   const navbar = document.querySelector('.navbar');
   
