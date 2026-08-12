@@ -724,14 +724,45 @@ section {
   padding-right: var(--space-lg);
 }
 
-.project-tech {
+.project-header-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.project-category {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--accent-primary);
-  margin-bottom: var(--space-sm);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  display: block;
+}
+
+.project-status {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+}
+
+.project-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+  margin-top: -0.5rem;
+}
+
+.project-tech-stack {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .project-title {
@@ -739,31 +770,96 @@ section {
   margin-bottom: var(--space-md);
 }
 
-.project-metrics {
-  display: flex;
-  gap: var(--space-md);
-  margin-bottom: var(--space-md);
-  padding-bottom: var(--space-sm);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.metric {
+.project-focus {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
+  gap: var(--space-xs);
 }
 
-.metric-val {
+/* Learning Repository Visual */
+.repository-visual {
+  background: transparent;
+  padding: var(--space-xl);
+}
+
+.repo-flow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.repo-flow::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: var(--border-strong);
+  z-index: 1;
+}
+
+.repo-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  position: relative;
+  z-index: 2;
+  transition: transform var(--motion-micro) var(--ease-standard);
+}
+
+.repo-node {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  transition: background var(--motion-micro) var(--ease-standard);
+}
+
+.repo-step.active .repo-node {
+  background: var(--accent-primary);
+  box-shadow: 0 0 10px rgba(79, 140, 255, 0.4);
+}
+
+.repo-step.future .repo-node {
+  background: var(--surface);
+  border: 1px dashed var(--border-strong);
+}
+
+.repo-text {
   font-family: var(--font-mono);
-  font-size: 1.25rem;
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.metric-label {
   font-size: 0.75rem;
   color: var(--text-muted);
-  text-transform: uppercase;
   letter-spacing: 0.05em;
+  transition: color var(--motion-micro) var(--ease-standard);
+}
+
+.repo-step.active .repo-text {
+  color: var(--accent-primary);
+}
+
+.project-card:hover .repo-step.active {
+  transform: translateX(4px);
+}
+
+.projects-footer {
+  text-align: center;
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.more-projects-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
 }
 
 .project-details {

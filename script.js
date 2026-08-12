@@ -2,28 +2,49 @@ document.addEventListener('DOMContentLoaded', () => {
   // --------------------------------------------------------
   // Internship Status Logic
   // --------------------------------------------------------
-  const internshipBadge = document.getElementById('internship-badge');
-  const internshipDate = document.getElementById('internship-date');
+  const internshipBadges = document.querySelectorAll('#internship-badge, .internship-status-badge');
+  const internshipDates = document.querySelectorAll('#internship-date, .internship-date-text');
   
-  if (internshipBadge && internshipDate) {
+  if (internshipBadges.length > 0 && internshipDates.length > 0) {
     const startDate = new Date('2026-08-15T00:00:00');
     const endDate = new Date('2026-11-15T00:00:00');
     const now = new Date();
     
+    let badgeText = '';
+    let dateText = '';
+    let badgeColor = '';
+    let badgeBg = '';
+    let badgeBorder = '';
+    
     if (now < startDate) {
-      internshipBadge.textContent = 'INCOMING';
-      internshipDate.textContent = 'STARTING 15 AUG 2026';
+      badgeText = 'INCOMING';
+      dateText = '15 AUG 2026';
     } else if (now >= startDate && now <= endDate) {
-      internshipBadge.textContent = 'CURRENT';
-      internshipBadge.style.color = 'var(--bg)';
-      internshipBadge.style.background = 'var(--accent-primary)';
-      internshipDate.textContent = 'AUG 2026 — NOV 2026';
+      badgeText = 'CURRENT';
+      badgeColor = 'var(--bg)';
+      badgeBg = 'var(--accent-primary)';
+      dateText = 'AUG 2026 — NOV 2026';
     } else {
-      internshipBadge.textContent = 'COMPLETED';
-      internshipBadge.style.color = 'var(--text-muted)';
-      internshipBadge.style.border = '1px solid var(--border-subtle)';
-      internshipDate.textContent = 'AUG 2026 — NOV 2026';
+      badgeText = 'COMPLETED';
+      badgeColor = 'var(--text-muted)';
+      badgeBorder = '1px solid var(--border-subtle)';
+      dateText = 'AUG 2026 — NOV 2026';
     }
+    
+    internshipBadges.forEach(badge => {
+      badge.textContent = badgeText;
+      if (badgeColor) badge.style.color = badgeColor;
+      if (badgeBg) badge.style.background = badgeBg;
+      if (badgeBorder) badge.style.border = badgeBorder;
+    });
+    
+    internshipDates.forEach(dateEl => {
+      if (dateEl.id === 'internship-date' && now < startDate) {
+        dateEl.textContent = 'STARTING 15 AUG 2026';
+      } else {
+        dateEl.textContent = dateText;
+      }
+    });
   }
   const navLinks = document.querySelectorAll('.nav-links a');
   const navbar = document.querySelector('.navbar');
