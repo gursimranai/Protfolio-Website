@@ -975,11 +975,13 @@ section {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: var(--space-sm);
   background: var(--surface-secondary);
-  padding: var(--space-lg);
+  padding: var(--space-xl) var(--space-lg);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-subtle);
+  position: relative;
 }
 
 .journey-node {
@@ -991,17 +993,92 @@ section {
   font-size: 0.875rem;
   color: var(--text-secondary);
   transition: all var(--motion-micro) var(--ease-standard);
+  position: relative;
+  cursor: default;
 }
 
-.journey-node.active-node {
-  border-color: var(--accent-primary);
+/* Status variants */
+.journey-node[data-status="foundation"] {
+  border-color: var(--border-strong);
   color: var(--text-primary);
+}
+
+.journey-node[data-status="building"] {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: var(--text-primary);
+}
+
+.journey-node[data-status="current"] {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
   background: rgba(79, 140, 255, 0.05);
+  box-shadow: 0 0 15px rgba(79, 140, 255, 0.1);
+}
+
+.journey-node[data-status="exploring"] {
+  opacity: 0.7;
+}
+
+.journey-node[data-status="upcoming"] {
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+/* Hover descriptions */
+.journey-node .node-desc {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  width: 250px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--motion-micro) var(--ease-standard);
+  z-index: 10;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+
+.journey-node:hover .node-desc {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.journey-node[data-status="current"]:hover {
+  transform: translateY(-2px);
 }
 
 .journey-arrow {
   color: var(--text-muted);
   font-family: var(--font-mono);
+  font-size: 1.2rem;
+}
+
+.journey-footer {
+  text-align: center;
+  margin-top: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.journey-footer-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  display: block;
 }
 
 /* Blog Section */
@@ -1284,8 +1361,83 @@ footer {
   
   h1 { font-size: 2.5rem; }
   
-  .skills-grid, .blog-grid {
+  .hero-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .about-grid, .projects-grid, .blog-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .projects-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .project-card {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Reset left/right borders for stacked layout */
+  .project-image {
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+    min-height: 250px;
+  }
+  
+  .project-content {
+    padding: var(--space-md);
+  }
+
+  /* Keep mobile flow correct */
+  .about-grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .about-intro {
+    order: 1;
+  }
+
+  #internship-card {
+    order: 2;
+  }
+
+  .skills-wrapper {
+    order: 3;
+  }
+
+  .about-visual {
+    order: 4;
+    margin-top: var(--space-lg);
+  }
+
+  .about-cta {
+    order: 5;
+  }
+  
+  .journey-flow {
+    flex-direction: column;
+    padding: var(--space-lg);
+  }
+  
+  .journey-arrow {
+    transform: rotate(90deg);
+    margin: var(--space-xs) 0;
+  }
+  
+  .journey-node .node-desc {
+    top: auto;
+    bottom: calc(100% + 10px);
+    width: 200px; /* slightly smaller on mobile */
+  }
+
+  .hero-image-wrapper {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 400px;
   }
   
   .tech-row {
