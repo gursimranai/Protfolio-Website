@@ -527,94 +527,80 @@ section {
   line-height: 1.6;
 }
 
-.tech-snapshot {
+.skill-journey {
   margin-top: var(--space-lg);
-  border-top: 1px solid var(--border-subtle);
-  padding-top: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  border-left: 1px solid var(--border-subtle);
+  padding-left: var(--space-lg);
 }
 
-.tech-row {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  margin-bottom: var(--space-sm);
-  align-items: baseline;
+.journey-category {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  position: relative;
+  transition: all var(--motion-micro) var(--ease-standard);
 }
 
-.tech-cat {
+.journey-category::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--space-lg) * -1 - 3px);
+  top: 0.35rem;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  transition: background var(--motion-micro) var(--ease-standard);
+}
+
+.journey-label {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--accent-primary);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color var(--motion-micro) var(--ease-standard);
 }
 
-.tech-items {
-  color: var(--text-primary);
-  font-size: 0.9375rem;
-}
-
-/* Skills Section */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-md);
-}
-
-.skill-card {
-  display: flex;
-  flex-direction: column;
-}
-
-.skill-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-md);
-}
-
-.skill-number {
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  transition: text-shadow var(--motion-standard) var(--ease-standard), color var(--motion-standard) var(--ease-standard);
-}
-
-.skill-card:hover .skill-number {
-  color: var(--accent-primary);
-  text-shadow: 0 0 12px rgba(79, 140, 255, 0.4);
-}
-
-.skill-icon {
-  font-family: var(--font-mono);
-  font-size: 1.25rem;
-  color: var(--border-strong);
-}
-
-.skill-title {
-  font-size: 1.125rem;
-  margin-bottom: var(--space-sm);
-  color: var(--text-primary);
-}
-
-.skill-list {
-  list-style: none;
+.journey-items {
   color: var(--text-secondary);
   font-size: 0.9375rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  line-height: 1.6;
+  transition: color var(--motion-micro) var(--ease-standard);
 }
 
-.skill-list li {
-  position: relative;
-  padding-left: 1.25rem;
+.journey-category:hover::before {
+  background: var(--accent-primary);
 }
 
-.skill-list li::before {
-  content: '·';
-  position: absolute;
-  left: 0;
-  color: var(--accent-primary);
-  font-weight: bold;
+.journey-category:hover .journey-items {
+  color: var(--text-primary);
+}
+
+/* Exploring state */
+.journey-category.exploring {
+  opacity: 0.6;
+}
+
+.journey-category.exploring::before {
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+}
+
+.journey-category.exploring:hover {
+  opacity: 1;
+}
+
+.journey-category.exploring .journey-label {
+  color: var(--text-muted);
+}
+
+.journey-category.exploring .journey-items {
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 /* Projects Section */
