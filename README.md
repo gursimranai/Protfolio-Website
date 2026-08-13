@@ -62,22 +62,6 @@ The website serves as my professional digital presence where recruiters, develop
 
 ---
 
-## 📂 Project Structure
-
-```bash
-Portfolio-Website/
-│
-├── index.html
-├── css/
-├── js/
-├── assets/
-├── images/
-├── resume/
-└── README.md
-```
-
----
-
 ## 🚀 Sections Included
 
 ### 🏠 Home
