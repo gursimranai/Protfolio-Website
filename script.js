@@ -353,4 +353,216 @@ document.addEventListener('DOMContentLoaded', () => {
     initNodes();
     animate();
   }
+
+  // --------------------------------------------------------
+  // Contact Form Submission (EmailJS + Toast Notifications)
+  // --------------------------------------------------------
+  
+  const EMAILJS_PUBLIC_KEY = 'fY6cC1Y-fHontjpz0';
+  const EMAILJS_SERVICE_ID = 'service_pkytpuo';
+  const EMAILJS_TEMPLATE_ID = 'template_vdvn5eu';
+
+  if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+
+  // Toast Notification System
+  const toastContainer = document.getElementById('toast-container');
+  const showToast = (message, type = 'success') => {
+    if (!toastContainer) return;
+    
+    const toast = document.createElement('div');
+    toast.style.padding = '1rem 1.5rem';
+    toast.style.borderRadius = 'var(--radius-sm)';
+    toast.style.fontFamily = 'var(--font-sans)';
+    toast.style.fontSize = '0.9375rem';
+    toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    toast.style.display = 'flex';
+    toast.style.alignItems = 'center';
+    toast.style.gap = '0.75rem';
+    toast.style.transition = 'all 0.3s ease';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(20px)';
+    
+    if (type === 'success') {
+      toast.style.background = 'rgba(16, 185, 129, 0.95)';
+      toast.style.color = '#fff';
+      toast.style.border = '1px solid #10B981';
+      toast.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> ${message}`;
+    } else {
+      toast.style.background = 'rgba(239, 68, 68, 0.95)';
+      toast.style.color = '#fff';
+      toast.style.border = '1px solid #EF4444';
+      toast.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ${message}`;
+    }
+
+    toastContainer.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+    }, 10);
+
+    // Remove after 5s
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(20px)';
+      setTimeout(() => toast.remove(), 300);
+    }, 5000);
+  };
+
+  const contactForm = document.getElementById('contact-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
+  const btnLoader = submitBtn ? submitBtn.querySelector('.btn-loader') : null;
+
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const nameInput = document.getElementById('contact-name');
+      const emailInput = document.getElementById('contact-email');
+      const messageInput = document.getElementById('contact-message');
+      
+      const nameError = document.getElementById('name-error');
+      const emailError = document.getElementById('email-error');
+      const messageError = document.getElementById('message-error');
+
+      // Reset errors
+      nameInput.classList.remove('error');
+      emailInput.classList.remove('error');
+      messageInput.classList.remove('error');
+      nameError.textContent = '';
+      emailError.textContent = '';
+      messageError.textContent = '';
+
+      let isValid = true;
+
+      // Validate
+      if (!nameInput.value.trim()) {
+        nameInput.classList.add('error');
+        nameError.textContent = 'Name is required';
+        isValid = false;
+      }
+
+      if (!emailInput.value.trim()) {
+        emailInput.classList.add('error');
+        emailError.textContent = 'Email is required';
+        isValid = false;
+      } else if (!validateEmail(emailInput.value.trim())) {
+        emailInput.classList.add('error');
+        emailError.textContent = 'Please enter a valid email';
+        isValid = false;
+      }
+
+      if (!messageInput.value.trim()) {
+        messageInput.classList.add('error');
+        messageError.textContent = 'Message is required';
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Spam Protection / Rate Limiting (1 message per 30 seconds)
+      const lastSentTime = localStorage.getItem('lastMessageSentAt');
+      const now = new Date().getTime();
+      const cooldown = 30 * 1000; // 30 seconds in ms
+      if (lastSentTime && now - parseInt(lastSentTime) < cooldown) {
+        const remainingMs = cooldown - (now - parseInt(lastSentTime));
+        const remainingSec = Math.ceil(remainingMs / 1000);
+        showToast(`Please wait ${remainingSec} seconds before sending another message.`, 'error');
+        return;
+      }
+
+      // Loading state
+      submitBtn.disabled = true;
+      btnText.textContent = 'Sending Message...';
+      btnLoader.style.display = 'inline-block';
+
+      try {
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const message = messageInput.value.trim();
+
+        // Send Email via EmailJS
+        if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+          const templateParams = {
+            name: name,
+            email: email,
+            message: message,
+            time: new Date().toLocaleString()
+          };
+          
+          console.log("Sending EmailJS payload:", { name, email, message, time: templateParams.time });
+          
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+          
+          // Success
+          localStorage.setItem('lastMessageSentAt', now.toString());
+          contactForm.reset();
+          showToast('Message sent successfully!', 'success');
+          btnText.textContent = '✓ Message Sent';
+          // revert after short delay
+          setTimeout(() => {
+            btnText.textContent = 'SEND MESSAGE';
+          }, 3000);
+        } else {
+          console.warn("EmailJS is not configured.");
+          showToast('Email service is not configured yet.', 'error');
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        showToast('Something went wrong. Please try again later or email me directly.', 'error');
+      } finally {
+        // Reset loading state
+        submitBtn.disabled = false;
+        if (btnText.textContent !== '✓ Message Sent') {
+            btnText.textContent = 'SEND MESSAGE';
+        }
+        btnLoader.style.display = 'none';
+      }
+    });
+  }
+
+  // --- Global Copy Email Handlers ---
+  const copyButtons = [
+    document.getElementById('copy-email-btn'), // Hero section
+    document.getElementById('copy-email-contact-btn') // Contact section
+  ];
+
+  copyButtons.forEach(btn => {
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        // Prevent clicking the card behind it
+        e.preventDefault();
+        e.stopPropagation();
+
+        const email = btn.dataset.email;
+        navigator.clipboard.writeText(email).then(() => {
+          const originalText = btn.textContent;
+          btn.textContent = 'COPIED!';
+          btn.style.color = '#10B981';
+          btn.style.borderColor = '#10B981';
+          
+          showToast('Email address copied to clipboard!', 'success');
+
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.color = '';
+            btn.style.borderColor = '';
+          }, 2000);
+        });
+      });
+    }
+  });
+
 });
